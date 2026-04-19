@@ -1320,6 +1320,7 @@ Transform:
   - {fileID: 1452854105}
   - {fileID: 504253331}
   - {fileID: 703678168}
+  - {fileID: 1654650890}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &430829126
@@ -4370,6 +4371,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1654650889
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1654650890}
+  - component: {fileID: 1654650891}
+  m_Layer: 0
+  m_Name: DecorationController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1654650890
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1654650889}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 428022076}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1654650891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1654650889}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81afcd72b5c97edb7ba56469928fa129, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  worldManager: {fileID: 0}
 --- !u!1 &1661792797
 GameObject:
   m_ObjectHideFlags: 0
@@ -5008,14 +5054,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5874b443c6b8e5e49a41f7a6b3fbb59f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldSizeX: 6
+  worldSizeX: 8
   worldSizeY: 1
-  worldSizeZ: 6
+  worldSizeZ: 8
   chunkSize: 64
   voxelSize: 0.5
   baseMat: {fileID: 2100000, guid: 6b699223d29e6e24ba2c92788ee0c9be, type: 2}
+  worldSeed: 12345
+  randomiseIntOnPlay: 1
   seedMinimumValue: 1
   seedMaximumValue: 2147483647
+  currentLevelType: 0
 --- !u!4 &1967955032
 Transform:
   m_ObjectHideFlags: 0
@@ -5135,7 +5184,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e23fe49a9f04f041a6ff6a31ffb068a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseSensitivity: 1
+  mouseSensitivity: 5
   mouseX: 0
   mouseY: 0
   keyboardInput: {x: 0, y: 0, z: 0}

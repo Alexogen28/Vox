@@ -53,11 +53,10 @@ public class GameManager : MonoBehaviour
 
         LayerMask groundMask = LayerMask.GetMask("Ground");
 
-        RaycastHit hit;
-        if(Physics.Raycast(raycastPosition, Vector3.down, out hit, Mathf.Infinity, groundMask))
+        if (Physics.Raycast(raycastPosition, Vector3.down, out RaycastHit hit, Mathf.Infinity, groundMask))
         {
             yInChunk = hit.point.y + 2.5f;
-        }     
+        }
 
         playerController.TeleportPlayer(new Vector3(xInChunk, yInChunk, zInChunk));
     }

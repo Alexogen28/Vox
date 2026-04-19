@@ -15,8 +15,9 @@ public abstract class VoxelChunk : MonoBehaviour
     public Vector3Int chunkCoord;
     public Vector3Int worldSize;
     protected WorldManager worldManager;
+    public Level level;
 
-    protected byte[,,] voxels;
+    public byte[,,] voxels;
     protected MeshFilter meshFilter;
     protected MeshCollider meshCollider;
     protected MeshRenderer meshRenderer;
@@ -29,7 +30,7 @@ public abstract class VoxelChunk : MonoBehaviour
     }
 
 
-    public void Initialize(int chunkSize, float voxelSize, Material material, int worldSeed, Vector3Int chunkCoord, Vector3Int worldSize, WorldManager worldManager)
+    public void Initialize(int chunkSize, float voxelSize, Material material, int worldSeed, Vector3Int chunkCoord, Vector3Int worldSize, WorldManager worldManager, Level level)
     {
         this.chunkSize = chunkSize;
         this.voxelSize = voxelSize;
@@ -37,6 +38,7 @@ public abstract class VoxelChunk : MonoBehaviour
         this.chunkCoord = chunkCoord;
         this.worldSize = worldSize;
         this.worldManager = worldManager;
+        this.level = level;
 
         meshRenderer.sharedMaterial = material;
 
