@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -179,4 +180,120 @@ public abstract class VoxelChunk : MonoBehaviour
         return neighborChunk.voxels[neighborLocalX, neighborLocalY, neighborLocalZ] != 0;
     }
 
+
+    /*
+        Query the chunk from the left to the right at a given Y,Z coordinate
+        and return the first Solid voxel in front of it which is Air
+    */
+    public bool TryGetFirstOXVoxel(int y, int z, out Vector3Int positionInChunk)
+    {
+        for(int x = 0; x < chunkSize-1; x++)
+        {
+            if(voxels[x,y,z] != 0 && voxels[x+1,y,z] == 0)
+            {
+                positionInChunk = new Vector3Int(x,y,z);
+                return true;
+            }
+        }
+
+        positionInChunk = default;
+        return false;
+    }
+
+    /*
+        Query the chunk from the right to the left at a given Y,Z coordinate
+        and return the first Solid voxel in front of it which is Air
+    */
+    public bool TryGetLastOXVoxel(int y, int z, out Vector3Int positionInChunk)
+    {
+        for(int x = chunkSize-1; x > 0; x--)
+        {
+            if(voxels[x,y,z] != 0 && voxels[x-1,y,z] == 0)
+            {
+                positionInChunk = new Vector3Int(x,y,z);
+                return true;
+            }
+        }
+
+        positionInChunk = default;
+        return false;
+    }   
+
+
+    /*
+        Query the chunk from the bottom to the top at a given X,Z coordinate
+        and return the first Solid voxel above which is Air
+    */
+    public bool TryGetBottomOYVoxel(int x, int z, out Vector3Int positionInChunk)
+    {
+        for(int y = 0; y < chunkSize-1; y++)
+        {
+            if(voxels[x,y,z] !=0 && voxels[x,y+1,z] == 0)
+            {
+                positionInChunk = new Vector3Int(x,y,z);
+                return true;
+            }
+        }
+
+        positionInChunk = default;
+        return false;
+    }
+
+    /*
+        Query the chunk from the top to the bottom at a given X,Z coordinate
+        and return the first Solid voxel under which is Air
+    */
+    public bool TryGetTopOYVoxel(int x, int z, out Vector3Int positionInChunk)
+    {
+        for(int y = chunkSize-1; y > 0; y--)
+        {
+            if(voxels[x,y,z] != 0 && voxels[x,y-1,z] == 0)
+            {
+                positionInChunk = new Vector3Int(x,y,z);
+                return true;
+            }
+        }
+
+        positionInChunk = default;
+        return false;
+    }
+
+
+    /*
+        Query the chunk from the back to the front at a given X,Y coordinate
+        and return the first Solid voxel in front of it which is Air
+    */
+    public bool TryGetFirstOZVoxel(int x, int y, out Vector3Int positionInChunk)
+    {
+        for(int z = 0; z < chunkSize-1; z++)
+        {
+            if(voxels[x,y,z] != 0 && voxels[x,y,z+1] == 0)
+            {
+                positionInChunk = new Vector3Int(x,y,z);
+                return true;
+            }
+        }
+
+        positionInChunk = default;
+        return false;
+    }
+
+    /*
+        Query the chunk from the front to the back at a given X,Y coordinate
+        and return the first Solid voxel in front of it which is Air
+    */
+    public bool TryGetLastOZVoxel(int x, int y, out Vector3Int positionInChunk)
+    {
+        for(int z = chunkSize-1 ; z > 0; z--)
+        {
+            if(voxels[x,y,z] != 0 && voxels[x,y,z-1] == 0)
+            {
+                positionInChunk = new Vector3Int(x,y,z);
+                return true;
+            }
+        }
+
+        positionInChunk = default;
+        return false;
+    }
 }

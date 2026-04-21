@@ -8,11 +8,11 @@ public abstract class VoxelObject : VoxelMeshEntity
     protected int worldSeed;
     protected Vector3 worldPosition;
 
-    public virtual void InitializeObject(Vector3Int objectSize, float voxelSize, Material material, int worldSeed, Vector3 worldPosition)
+    public virtual void InitializeObject(Vector3Int objectSize, float voxelScale, Material material, int worldSeed, Vector3 worldPosition)
     {
         this.worldSeed = worldSeed;
         this.worldPosition = worldPosition;
 
-        InitializeVoxelData(objectSize, voxelSize, material);
+        InitializeVoxelData(objectSize, voxelScale, material);
     }
 }

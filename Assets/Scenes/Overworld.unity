@@ -4415,7 +4415,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81afcd72b5c97edb7ba56469928fa129, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldManager: {fileID: 0}
+  worldManager: {fileID: 1967955031}
+  decorationDensity: 0
+  availableDecorations:
+  - level: 0
+    decorations: []
+  - level: 1
+    decorations: []
+  - level: 0
+    decorations: []
+  decorationsRoot: {fileID: 0}
+  placedDecorations: []
 --- !u!1 &1661792797
 GameObject:
   m_ObjectHideFlags: 0
@@ -5054,6 +5064,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5874b443c6b8e5e49a41f7a6b3fbb59f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  decorationController: {fileID: 0}
   worldSizeX: 8
   worldSizeY: 1
   worldSizeZ: 8

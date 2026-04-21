@@ -8,7 +8,7 @@ using UnityEngine;
 public abstract class VoxelMeshEntity : MonoBehaviour
 {
     [Header("Voxel Settings")]
-    [SerializeField] protected float voxelSize = 1f;
+    [SerializeField] protected float voxelScale = 1f;
 
     protected byte[,,] voxels;
     protected Vector3Int dimensions;
@@ -44,10 +44,10 @@ public abstract class VoxelMeshEntity : MonoBehaviour
         meshRenderer = GetComponent<MeshRenderer>();
     }
 
-    protected void InitializeVoxelData(Vector3Int dimensions, float voxelSize, Material material)
+    protected void InitializeVoxelData(Vector3Int dimensions, float voxelScale, Material material)
     {
         this.dimensions = dimensions;
-        this.voxelSize = voxelSize;
+        this.voxelScale = voxelScale;
 
         if (material != null)
             meshRenderer.sharedMaterial = material;
@@ -76,7 +76,7 @@ public abstract class VoxelMeshEntity : MonoBehaviour
                 {
                     if (voxels[x, y, z] == 0) continue;
 
-                    Vector3 pos = new Vector3(x, y, z) * voxelSize;
+                    Vector3 pos = new Vector3(x, y, z) * voxelScale;
                     AddCubeFaces(x, y, z, pos, vertices, triangles);
                 }
             }
@@ -106,7 +106,7 @@ public abstract class VoxelMeshEntity : MonoBehaviour
             if (!IsVoxelSolid(nx, ny, nz))
             {
                 foreach (var v in FaceVertices[i])
-                    vertices.Add(pos + v * voxelSize);
+                    vertices.Add(pos + v * voxelScale);
 
                 triangles.Add(startIndex);
                 triangles.Add(startIndex + 1);

@@ -12,25 +12,28 @@ using UnityEngine;
     Is resposible for   creating the world 
                         recreating it with each new level
                         providing information about the world
-*/                          
+*/
 
 
 
-public enum Level
-{
-    Surface,
-    UpperCaves,
-    InnerDepths,
-    UndergroundBog,
-}
+// public enum Level
+// {
+//     Surface,
+//     UpperCaves,
+//     InnerDepths,
+//     UndergroundBog,
+// }
 
 public class WorldManager : MonoBehaviour
 {
-    [Header ("World Stats")]
+    [Header("Relevant Managers")]
+    [SerializeField] private DecorationController decorationController;
+
+    [Header("World Stats")]
     [SerializeField] public int worldSizeX = 4;
     [SerializeField] public int worldSizeY = 1;
     [SerializeField] public int worldSizeZ = 4;
- 
+
     [Header("Chunk Stats")]
     [SerializeField] public int chunkSize = 64;
     [SerializeField] public float voxelSize = 0.75f;
@@ -43,13 +46,17 @@ public class WorldManager : MonoBehaviour
     [SerializeField] private bool randomiseIntOnPlay = true;
     public int seedMinimumValue = 1;
     public int seedMaximumValue = int.MaxValue;
-
-    public Level currentLevelType;
-
+    
+    //big TODO change this to an SO!
+    public Level currentLevel;
     private Vector3Int worldSize;
-
     private Dictionary<Vector3Int, VoxelChunk> worldChunks = new();
 
+    public VoxelChunk GetChunk(Vector3Int coord) =>
+        worldChunks.TryGetValue(coord, out var chunk) ? chunk : null;
+
+    public Dictionary<Vector3Int, VoxelChunk> GetAllWorldChunks =>
+        worldChunks;
 
     private void SetRandomSeed()
     {
@@ -58,46 +65,63 @@ public class WorldManager : MonoBehaviour
 
     public void GenerateWorldOnStartup()
     {
-        if(randomiseIntOnPlay) SetRandomSeed();
+        //get a random seed if allowed
+        //this should pass when the player does not input
+        //a seed at game start from the main menu
+        if (randomiseIntOnPlay) SetRandomSeed();
+
+        
         worldSize = new Vector3Int(worldSizeX, worldSizeY, worldSizeZ);
-        GenerateWorld(Level.Surface);
+
+        //setup the starting level
+        currentLevel = new Level();
+
+        //surface should only place stuff on the top of the world, its not a cave
+        List<PlacementPosition> availablePlacementPositions = new List<PlacementPosition>
+        {
+            PlacementPosition.Bottom
+        };
+
+        //initialise and generate the Surface world
+        currentLevel.Initialise(LevelName.Surface, availablePlacementPositions);
+        GenerateWorld(currentLevel);
     }
 
     /*
         Old method of generating world via Type
         Deprecated, but kept because its neat
     */
-    void GenerateWorld<T>() where T : VoxelChunk
-    {
-        worldChunks.Clear();
+    // void GenerateWorld<T>() where T : VoxelChunk
+    // {
+    //     worldChunks.Clear();
 
-        Debug.Log("Generating world...");
+    //     Debug.Log("Generating world...");
 
-        for (int x = 0; x < worldSizeX; x++)
-        {
-            for(int  y = 0; y < worldSizeY; y++)
-            {
-                for(int z = 0; z < worldSizeZ; z++)
-                {
-                    var coord = new Vector3Int(x, y, z);
+    //     for (int x = 0; x < worldSizeX; x++)
+    //     {
+    //         for (int y = 0; y < worldSizeY; y++)
+    //         {
+    //             for (int z = 0; z < worldSizeZ; z++)
+    //             {
+    //                 var coord = new Vector3Int(x, y, z);
 
-                    Vector3 worldCoord = new Vector3(x, y, z) * (chunkSize * voxelSize);
+    //                 Vector3 worldCoord = new Vector3(x, y, z) * (chunkSize * voxelSize);
 
-                    var chunkGameObject = new GameObject($"Chunk_{x}_{y}_{z}");
+    //                 var chunkGameObject = new GameObject($"Chunk_{x}_{y}_{z}");
 
-                    chunkGameObject.transform.SetParent(transform, false);
-                    chunkGameObject.transform.localPosition = worldCoord;
-                    chunkGameObject.layer = LayerMask.NameToLayer("Ground");
+    //                 chunkGameObject.transform.SetParent(transform, false);
+    //                 chunkGameObject.transform.localPosition = worldCoord;
+    //                 chunkGameObject.layer = LayerMask.NameToLayer("Ground");
 
-                    var chunk = chunkGameObject.AddComponent<T>();
-                    chunk.Initialize(chunkSize, voxelSize, baseMat, worldSeed, coord, worldSize, this, Level.Surface);
-                    
-                    worldChunks.Add(coord, chunk);
-                    Debug.Log($"Creating chunk at {coord} / worldPos {worldCoord}");
-                }
-            }    
-        }
-    }
+    //                 var chunk = chunkGameObject.AddComponent<T>();
+    //                 chunk.Initialize(chunkSize, voxelSize, baseMat, worldSeed, coord, worldSize, this, currentLevel);
+
+    //                 worldChunks.Add(coord, chunk);
+    //                 Debug.Log($"Creating chunk at {coord} / worldPos {worldCoord}");
+    //             }
+    //         }
+    //     }
+    // }
 
     /*
         Generate the current level based on the given Level type
@@ -107,14 +131,14 @@ public class WorldManager : MonoBehaviour
 
     public void GenerateWorld(Level level)
     {
-        currentLevelType = level;
+        currentLevel = level;
         ClearWorld();
 
         Debug.Log("Generating world...");
 
         for (int x = 0; x < worldSizeX; x++)
         {
-            if (level == Level.Surface)
+            if (level.GetLevelName() == LevelName.Surface)
                 for (int y = 0; y < 1; y++)
                     for (int z = 0; z < worldSizeZ; z++)
                     {
@@ -131,6 +155,10 @@ public class WorldManager : MonoBehaviour
                         GenerateChunk(level, coord);
                     }
         }
+
+        //initialise world decoration
+        //DecorationController will then call back WorldManager for details
+        decorationController.DecorateWorld(level);
     }
 
     private void GenerateChunk(Level level, Vector3Int coord)
@@ -144,7 +172,7 @@ public class WorldManager : MonoBehaviour
         chunkGameObject.transform.localPosition = worldCoord;
         chunkGameObject.layer = LayerMask.NameToLayer("Ground");
 
-        VoxelChunk chunk = (VoxelChunk) chunkGameObject.AddComponent(levelType);
+        VoxelChunk chunk = (VoxelChunk)chunkGameObject.AddComponent(levelType);
         chunk.Initialize(chunkSize, voxelSize, baseMat, worldSeed, coord, worldSize, this, level);
 
         worldChunks.Add(coord, chunk);
@@ -153,26 +181,23 @@ public class WorldManager : MonoBehaviour
 
     public System.Type GetChunkTypeForLevel(Level level)
     {
-        switch(level)
+        switch (level.GetLevelName())
         {
-            case Level.Surface: return typeof(SurfaceChunk);
+            case LevelName.Surface: return typeof(SurfaceChunk);
             default: return typeof(SurfaceChunk);
         }
     }
 
     private void ClearWorld()
-{
-    foreach (var chunk in worldChunks.Values)
     {
-        if (chunk != null)
-            Destroy(chunk.gameObject);
+        foreach (var chunk in worldChunks.Values)
+        {
+            if (chunk != null)
+                Destroy(chunk.gameObject);
+        }
+
+        worldChunks.Clear();
     }
-
-    worldChunks.Clear();
-}
-
-    public VoxelChunk GetChunk(Vector3Int coord) =>
-        worldChunks.TryGetValue(coord, out var chunk) ? chunk : null;
 
     public Vector3Int GetRandomChunkCoords(bool avoidEdges = false)
     {
