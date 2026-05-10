@@ -1,5 +1,4 @@
 using UnityEngine;
-using System;
 
 public enum AvailableSeedKeys
 {
@@ -10,7 +9,9 @@ public enum AvailableSeedKeys
     SpawnPoint,
     SpawnChunk,
 
-    Cave,
+    UpperCavesTerrain,
+    UpperCavesDetails,
+
     Dungeon,
     Item,
     Enemy

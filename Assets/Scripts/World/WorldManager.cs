@@ -110,6 +110,11 @@ public class WorldManager : MonoBehaviour
 
         Debug.Log("Generating world...");
 
+        /*
+         * First pass of world generation
+         * Sets down all chunks in their base form
+         */
+
         for (int x = 0; x < worldSizeX; x++)
         {
             if (level.levelName == LevelName.Surface)
@@ -129,6 +134,11 @@ public class WorldManager : MonoBehaviour
                         GenerateChunk(level, coord);
                     }
         }
+
+        /*
+         * Second pass of world generation
+         * Determines the possible descent positions 
+         */
 
         //initialise world decoration
         //DecorationController will then call back WorldManager for details
@@ -239,6 +249,7 @@ public class WorldManager : MonoBehaviour
         switch (level.levelName)
         {
             case LevelName.Surface: return typeof(SurfaceChunk);
+            case LevelName.UpperCaves: return typeof(UpperCavesChunk);
             default: return typeof(SurfaceChunk);
         }
     }

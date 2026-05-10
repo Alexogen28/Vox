@@ -24,4 +24,5 @@ public class LevelSO : ScriptableObject
 {
     [SerializeField] public LevelName levelName;
     [SerializeField] public List<PlacementPosition> allowedPlacementPositions;
+    //[SerializeField] public bool hasDescentCorridors;
 }

@@ -86,6 +86,11 @@ public abstract class VoxelChunk : MonoBehaviour
         //Debug.Log($"{gameObject.name}: vertices={vertices.Count}, triangles={triangles.Count}");
     }
 
+    protected void RedrawMesh()
+    {
+        GenerateMesh();
+    }
+
     protected virtual void AddCubeFaces(int x, int y, int z, Vector3 pos, List<Vector3> vertices, List<int> triangles)
     {
         int startIndex = vertices.Count;
@@ -257,6 +262,25 @@ public abstract class VoxelChunk : MonoBehaviour
     }
 
     /*
+        Query the chunk from the bottom to the top at a given X,Z coordinate
+        and return the CHUNK POSITION of the first Solid voxel above which is Air
+     */
+    public bool TryGetBottomOYVoxelInChunk(int x, int z, out Vector3Int positionInChunk)
+    {
+        for (int y = 0; y < chunkSize - 1; y++)
+        {
+            if (voxels[x, y, z] != 0 && voxels[x, y + 1, z] == 0)
+            {
+                positionInChunk = new Vector3Int(x, y - 1, z);
+                return true;
+            }
+        }
+
+        positionInChunk = default;
+        return false;
+    }
+
+    /*
         Query the chunk from the top to the bottom at a given X,Z coordinate
         and return the WORLD POSITION of the first Solid voxel under which is Air
     */
@@ -274,6 +298,25 @@ public abstract class VoxelChunk : MonoBehaviour
         }
 
         positionInWorld = default;
+        return false;
+    }
+
+    /*
+        Query the chunk from the top to the bottom at a given X,Z coordinate
+        and return the CHUNK POSITION of the first Solid voxel under which is Air
+    */
+    public bool TryGetTopOYVoxelInChunk(int x, int z, out Vector3Int positionInChunk)
+    {
+        for (int y = chunkSize - 1; y > 0; y--)
+        {
+            if (voxels[x, y, z] != 0 && voxels[x, y - 1, z] == 0)
+            {
+                positionInChunk = new Vector3Int(x, y, z);
+                return true;
+            }
+        }
+
+        positionInChunk = default;
         return false;
     }
 
