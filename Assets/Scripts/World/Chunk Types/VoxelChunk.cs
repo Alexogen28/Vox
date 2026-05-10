@@ -9,14 +9,17 @@ using UnityEngine;
 [RequireComponent(typeof(MeshRenderer))]
 public abstract class VoxelChunk : MonoBehaviour
 {
+    protected WorldManager worldManager;
     //Chunk settings
     public int chunkSize;
     public float voxelSize;
     public int worldSeed;
     public Vector3Int chunkCoord;
+
+    //coordinates of the chunk's [0,0,0] coordinate in world space!
+    private Vector3 worldChunkCoord;
     public Vector3Int worldSize;
-    protected WorldManager worldManager;
-    public Level level;
+    public LevelSO level;
 
     public byte[,,] voxels;
     protected MeshFilter meshFilter;
@@ -31,13 +34,16 @@ public abstract class VoxelChunk : MonoBehaviour
     }
 
 
-    public void Initialize(int chunkSize, float voxelSize, Material material, int worldSeed, Vector3Int chunkCoord, Vector3Int worldSize, WorldManager worldManager, Level level)
+    public void Initialize(int chunkSize, float voxelSize, Material material, int worldSeed, 
+        Vector3Int chunkCoord, Vector3Int worldSize, Vector3 worldChunkCoord, 
+        WorldManager worldManager, LevelSO level)
     {
         this.chunkSize = chunkSize;
         this.voxelSize = voxelSize;
         this.worldSeed = worldSeed;
         this.chunkCoord = chunkCoord;
         this.worldSize = worldSize;
+        this.worldChunkCoord = worldChunkCoord;
         this.worldManager = worldManager;
         this.level = level;
 
@@ -47,6 +53,8 @@ public abstract class VoxelChunk : MonoBehaviour
         GenerateChunkData();
         GenerateMesh();
     }
+
+    public Vector3 WorldChunkCoord => worldChunkCoord;
 
     protected abstract void GenerateChunkData();
 
@@ -183,98 +191,108 @@ public abstract class VoxelChunk : MonoBehaviour
 
     /*
         Query the chunk from the left to the right at a given Y,Z coordinate
-        and return the first Solid voxel in front of it which is Air
+        and return the WORLD POSITION of the first Solid voxel in front of it which is Air
     */
-    public bool TryGetFirstOXVoxel(int y, int z, out Vector3Int positionInChunk)
+    public bool TryGetFirstOXVoxel(int y, int z, out Vector3 positionInWorld)
     {
         for(int x = 0; x < chunkSize-1; x++)
         {
             if(voxels[x,y,z] != 0 && voxels[x+1,y,z] == 0)
             {
-                positionInChunk = new Vector3Int(x,y,z);
+                positionInWorld = new Vector3(x,y,z);
+                positionInWorld *= voxelSize;
+                positionInWorld += worldChunkCoord;
                 return true;
             }
         }
 
-        positionInChunk = default;
+        positionInWorld = default;
         return false;
     }
 
     /*
         Query the chunk from the right to the left at a given Y,Z coordinate
-        and return the first Solid voxel in front of it which is Air
+        and return the WORLD POSITION of the first Solid voxel in front of it which is Air
     */
-    public bool TryGetLastOXVoxel(int y, int z, out Vector3Int positionInChunk)
+    public bool TryGetLastOXVoxel(int y, int z, out Vector3 positionInWorld)
     {
         for(int x = chunkSize-1; x > 0; x--)
         {
             if(voxels[x,y,z] != 0 && voxels[x-1,y,z] == 0)
             {
-                positionInChunk = new Vector3Int(x,y,z);
+                positionInWorld = new Vector3(x,y,z);
+                positionInWorld *= voxelSize;
+                positionInWorld += worldChunkCoord;
                 return true;
             }
         }
 
-        positionInChunk = default;
+        positionInWorld = default;
         return false;
     }   
 
 
     /*
         Query the chunk from the bottom to the top at a given X,Z coordinate
-        and return the first Solid voxel above which is Air
+        and return the WORLD POSITION of the first Solid voxel above which is Air
     */
-    public bool TryGetBottomOYVoxel(int x, int z, out Vector3Int positionInChunk)
+    public bool TryGetBottomOYVoxel(int x, int z, out Vector3 positionInWorld)
     {
         for(int y = 0; y < chunkSize-1; y++)
         {
             if(voxels[x,y,z] !=0 && voxels[x,y+1,z] == 0)
             {
-                positionInChunk = new Vector3Int(x,y,z);
+                positionInWorld = new Vector3(x,y-1,z);
+                positionInWorld *= voxelSize;
+                positionInWorld += worldChunkCoord;
                 return true;
             }
         }
 
-        positionInChunk = default;
+        positionInWorld = default;
         return false;
     }
 
     /*
         Query the chunk from the top to the bottom at a given X,Z coordinate
-        and return the first Solid voxel under which is Air
+        and return the WORLD POSITION of the first Solid voxel under which is Air
     */
-    public bool TryGetTopOYVoxel(int x, int z, out Vector3Int positionInChunk)
+    public bool TryGetTopOYVoxel(int x, int z, out Vector3 positionInWorld)
     {
         for(int y = chunkSize-1; y > 0; y--)
         {
             if(voxels[x,y,z] != 0 && voxels[x,y-1,z] == 0)
             {
-                positionInChunk = new Vector3Int(x,y,z);
+                positionInWorld = new Vector3(x,y,z);
+                positionInWorld *= voxelSize;
+                positionInWorld += worldChunkCoord;
                 return true;
             }
         }
 
-        positionInChunk = default;
+        positionInWorld = default;
         return false;
     }
 
 
     /*
         Query the chunk from the back to the front at a given X,Y coordinate
-        and return the first Solid voxel in front of it which is Air
+        and return the WORLD POSITION of the first Solid voxel in front of it which is Air
     */
-    public bool TryGetFirstOZVoxel(int x, int y, out Vector3Int positionInChunk)
+    public bool TryGetFirstOZVoxel(int x, int y, out Vector3 positionInWorld)
     {
         for(int z = 0; z < chunkSize-1; z++)
         {
             if(voxels[x,y,z] != 0 && voxels[x,y,z+1] == 0)
             {
-                positionInChunk = new Vector3Int(x,y,z);
+                positionInWorld = new Vector3(x,y,z);
+                positionInWorld *= voxelSize;
+                positionInWorld += worldChunkCoord;
                 return true;
             }
         }
 
-        positionInChunk = default;
+        positionInWorld = default;
         return false;
     }
 
@@ -282,18 +300,22 @@ public abstract class VoxelChunk : MonoBehaviour
         Query the chunk from the front to the back at a given X,Y coordinate
         and return the first Solid voxel in front of it which is Air
     */
-    public bool TryGetLastOZVoxel(int x, int y, out Vector3Int positionInChunk)
+    public bool TryGetLastOZVoxel(int x, int y, out Vector3 positionInWorld)
     {
         for(int z = chunkSize-1 ; z > 0; z--)
         {
             if(voxels[x,y,z] != 0 && voxels[x,y,z-1] == 0)
             {
-                positionInChunk = new Vector3Int(x,y,z);
+                positionInWorld = new Vector3(x,y,z);
+                positionInWorld *= voxelSize;
+                positionInWorld += worldChunkCoord;
                 return true;
             }
         }
 
-        positionInChunk = default;
+        positionInWorld = default;
         return false;
     }
+
+
 }

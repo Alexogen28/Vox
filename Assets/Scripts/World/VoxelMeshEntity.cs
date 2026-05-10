@@ -9,10 +9,12 @@ public abstract class VoxelMeshEntity : MonoBehaviour
 {
     [Header("Voxel Settings")]
     [SerializeField] protected float voxelScale = 1f;
+    [SerializeField] protected Material[] materialsList;
 
+    protected int worldSeed;
+    protected Vector3 worldPosition;
     protected byte[,,] voxels;
     protected Vector3Int dimensions;
-
     protected MeshFilter meshFilter;
     protected MeshCollider meshCollider;
     protected MeshRenderer meshRenderer;
@@ -44,29 +46,29 @@ public abstract class VoxelMeshEntity : MonoBehaviour
         meshRenderer = GetComponent<MeshRenderer>();
     }
 
-    protected void InitializeVoxelData(Vector3Int dimensions, float voxelScale, Material material)
+    //prepare the voxels[] vector so it can be filled up
+    protected void InitializeVoxelData(Vector3Int dimensions, float voxelScale)
     {
         this.dimensions = dimensions;
         this.voxelScale = voxelScale;
 
-        if (material != null)
-            meshRenderer.sharedMaterial = material;
+        if (materialsList != null)
+            meshRenderer.sharedMaterials = materialsList;
 
         voxels = new byte[dimensions.x, dimensions.y, dimensions.z];
     }
 
     protected abstract void GenerateVoxelData();
 
-    public void Build()
-    {
-        GenerateVoxelData();
-        GenerateMesh();
-    }
-
     protected virtual void GenerateMesh()
     {
         var vertices = new List<Vector3>();
-        var triangles = new List<int>();
+        List<int>[] trianglesByMaterial = new List<int>[materialsList.Length];
+
+        for(int i=0; i<materialsList.Length; i++)
+        {
+            trianglesByMaterial[i] = new List<int>();
+        }
 
         for (int x = 0; x < dimensions.x; x++)
         {
@@ -76,15 +78,21 @@ public abstract class VoxelMeshEntity : MonoBehaviour
                 {
                     if (voxels[x, y, z] == 0) continue;
 
+                    int materialIndex = voxels[x,y,z] - 1;
+
                     Vector3 pos = new Vector3(x, y, z) * voxelScale;
-                    AddCubeFaces(x, y, z, pos, vertices, triangles);
+                    AddCubeFaces(x, y, z, pos, vertices, trianglesByMaterial[materialIndex]);
                 }
             }
         }
 
         var mesh = new Mesh { indexFormat = UnityEngine.Rendering.IndexFormat.UInt32 };
+        mesh.subMeshCount = materialsList.Length;
         mesh.SetVertices(vertices);
-        mesh.SetTriangles(triangles, 0);
+
+        for(int i=0; i<materialsList.Length; i++)
+            mesh.SetTriangles(trianglesByMaterial[i], i);
+
         mesh.RecalculateNormals();
 
         meshFilter.sharedMesh = mesh;

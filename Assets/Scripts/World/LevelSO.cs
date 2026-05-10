@@ -9,7 +9,7 @@ public enum LevelName
     UndergroundBog
 }
 
-public enum Positions
+public enum PlacementPosition
 {
     Top,
     Bottom,
@@ -23,5 +23,5 @@ public enum Positions
 public class LevelSO : ScriptableObject
 {
     [SerializeField] public LevelName levelName;
-    [SerializeField] public List<Positions> allowedPlacementPositions;
+    [SerializeField] public List<PlacementPosition> allowedPlacementPositions;
 }

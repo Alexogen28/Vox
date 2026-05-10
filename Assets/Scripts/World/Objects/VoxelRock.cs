@@ -1,24 +1,22 @@
 using UnityEngine;
-using System;
 
 public class VoxelRock : VoxelObject
 {
+    /*
+        Materials to be listed as 
+        1 -- rock material
+    */
     protected override void GenerateVoxelData()
     {
-        Vector3Int worldPositionInt = new Vector3Int(
-            (int)worldPosition.x,
-            (int)worldPosition.y,
-            (int)worldPosition.z
-        );
-        var rng = Seed.CreateRandom(worldSeed, AvailableSeedKeys.SurfaceDetails, worldPositionInt);
-
         Vector3 center = new Vector3(
             dimensions.x / 2f,
-            dimensions.y / 2f,
+            dimensions.y * 0.35f,
             dimensions.z / 2f
         );
 
-        float radius = Mathf.Min(dimensions.x, dimensions.y, dimensions.z) * 0.4f;
+        float radiusX = dimensions.x * 0.45f;
+        float radiusY = dimensions.y * 0.30f;
+        float radiusZ = dimensions.z * 0.45f;
 
         for (int x = 0; x < dimensions.x; x++)
         {
@@ -26,13 +24,24 @@ public class VoxelRock : VoxelObject
             {
                 for (int z = 0; z < dimensions.z; z++)
                 {
-                    Vector3 position = new Vector3(x, y, z);
-                    float dist = Vector3.Distance(position, center);
+                    Vector3 localPosition = new Vector3(x, y, z);
 
-                    float variation = ((float)rng.NextDouble() * 1.0f) - 0.5f;
+                    float normalizedDistance =
+                        Mathf.Pow((localPosition.x - center.x) / radiusX, 2f) +
+                        Mathf.Pow((localPosition.y - center.y) / radiusY, 2f) +
+                        Mathf.Pow((localPosition.z - center.z) / radiusZ, 2f);
 
-                    if (dist <= radius + variation)
+                    float noise = Mathf.PerlinNoise(
+                        (worldPosition.x + x) * 0.25f,
+                        (worldPosition.z + z) * 0.25f
+                    );
+
+                    float surfaceVariation = Mathf.Lerp(0.85f, 1.15f, noise);
+
+                    if (normalizedDistance <= surfaceVariation)
+                    {
                         voxels[x, y, z] = 1;
+                    }
                 }
             }
         }

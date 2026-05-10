@@ -7,6 +7,8 @@ public enum AvailableSeedKeys
     SurfaceBiome,
     SurfaceDetails,
 
+    SpawnPoint,
+
     Cave,
     Dungeon,
     Item,

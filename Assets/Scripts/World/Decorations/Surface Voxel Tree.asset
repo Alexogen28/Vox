@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f81305b672f274f97afd4b316c7fac8a, type: 3}
+  m_Name: Surface Voxel Tree
+  m_EditorClassIdentifier: 
+  decorationName: Surface Voxel Tree
+  prefab: {fileID: 950679644620383915, guid: 363242ea009183f8ba60eea05208c878, type: 3}
+  materialsList:
+  - {fileID: 2100000, guid: 15e0180b4aa1a91c49c4d51374a1cf7f, type: 2}
+  - {fileID: 2100000, guid: 9fd979e54d74a3122b4416a13c65478e, type: 2}
+  spawnChance: 1
+  clearanceHeight: 4
+  flatnessRadius: 1
+  edgePadding: 4
+  minimumSpacing: 4
+  voxelObjectSize: {x: 8, y: 40, z: 8}
+  voxelScale: 0.5
