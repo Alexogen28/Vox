@@ -58,7 +58,6 @@ public abstract class VoxelChunk : MonoBehaviour
 
     protected abstract void GenerateChunkData();
 
-
     protected virtual void GenerateMesh()
     {
         var vertices = new List<Vector3>();
@@ -84,7 +83,7 @@ public abstract class VoxelChunk : MonoBehaviour
         meshCollider.sharedMesh = null;
         meshCollider.sharedMesh = mesh;
 
-        Debug.Log($"{gameObject.name}: vertices={vertices.Count}, triangles={triangles.Count}");
+        //Debug.Log($"{gameObject.name}: vertices={vertices.Count}, triangles={triangles.Count}");
     }
 
     protected virtual void AddCubeFaces(int x, int y, int z, Vector3 pos, List<Vector3> vertices, List<int> triangles)
@@ -188,6 +187,10 @@ public abstract class VoxelChunk : MonoBehaviour
         return neighborChunk.voxels[neighborLocalX, neighborLocalY, neighborLocalZ] != 0;
     }
 
+    public void RemoveVoxel(int x, int y, int z)
+    {
+        voxels[x, y, z] = 0;
+    }
 
     /*
         Query the chunk from the left to the right at a given Y,Z coordinate

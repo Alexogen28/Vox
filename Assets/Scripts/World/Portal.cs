@@ -8,7 +8,9 @@ public class Portal : MonoBehaviour
     public void Initialise(GameManager gameManager, LevelSO levelToTeleportTo)
     {
         this.levelToTeleportTo = levelToTeleportTo;
+        Debug.Log("Sucessfuly added level to teleport to to portal");
         this.gameManager = gameManager;
+        Debug.Log("Sucessfully added Game Manager to portal");
     }
 
     private void TeleportToNextLevel()
@@ -16,7 +18,7 @@ public class Portal : MonoBehaviour
         gameManager.worldManager.GenerateWorld(levelToTeleportTo);
     }
 
-    public void OnColliderEnter(Collider other)
+    public void OnTriggerEnter(Collider other)
     {
         if(other.CompareTag("Player"))
         {

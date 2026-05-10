@@ -50,16 +50,16 @@ public class DecorationController : MonoBehaviour
     public void DecorateWorld(LevelSO level)
     {
         List<DecorationDefinitionSO> availableDecorations = GetAllDecorationsForLevel(level);
-        Debug.Log("Snatched all available decorations");
+        //Debug.Log("Snatched all available decorations");
 
         IReadOnlyDictionary<Vector3Int, VoxelChunk> worldChunks = gameManager.worldManager.GetAllWorldChunks;
-        Debug.Log("Got all available worldChunks");
+        //Debug.Log("Got all available worldChunks");
 
         foreach (KeyValuePair<Vector3Int, VoxelChunk> chunkEntry in worldChunks)
         {
             VoxelChunk chunk = chunkEntry.Value;
 
-            Debug.Log("Decorating chunk" + chunk.gameObject.name);
+            //Debug.Log("Decorating chunk" + chunk.gameObject.name);
             DecorateChunk(chunk, availableDecorations);
         }
     }
@@ -213,13 +213,13 @@ public class DecorationController : MonoBehaviour
         }
 
         VoxelObject voxelObject = newDecoration.GetComponent<VoxelObject>();
-        Debug.Log("Got the following voxelObject:" + voxelObject.name);
+        //Debug.Log("Got the following voxelObject:" + voxelObject.name);
 
         if(voxelObject != null)
         {
             voxelObject.InitializeObject(decorationDefinition.VoxelObjectSize, decorationDefinition.VoxelScale,
                 gameManager.worldManager.GetWorldSeed(), spawnPosition, decorationDefinition.materialsList);
-            Debug.Log("Initialised Voxel object" + voxelObject.name);
+            //Debug.Log("Initialised Voxel object" + voxelObject.name);
         }
         return true;
     }

@@ -231,7 +231,7 @@ public class WorldManager : MonoBehaviour
         chunk.Initialize(chunkSize, voxelSize, baseMat, worldSeed, coord, worldSize, worldCoord, this, level);
 
         worldChunks.Add(coord, chunk);
-        Debug.Log($"Creating chunk at {coord} / worldPos {worldCoord}");
+        //Debug.Log($"Creating chunk at {coord} / worldPos {worldCoord}");
     }
 
     public System.Type GetChunkTypeForLevel(LevelSO level)

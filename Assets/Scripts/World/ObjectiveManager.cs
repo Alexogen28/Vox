@@ -35,14 +35,16 @@ public class ObjectiveManager : MonoBehaviour
 
         System.Random randomPoint = Seed.CreateRandom(gameManager.worldManager.GetWorldSeed(), AvailableSeedKeys.SpawnPoint);
 
-        coordinatesInsideChunk.x = randomPoint.Next();
-        coordinatesInsideChunk.y = randomPoint.Next();
+        coordinatesInsideChunk.x = randomPoint.Next(0, gameManager.worldManager.chunkSize);
+        coordinatesInsideChunk.y = randomPoint.Next(0, gameManager.worldManager.chunkSize);
 
         gameManager.worldManager.GetChunk(portalChunkCoordinates).TryGetBottomOYVoxel(coordinatesInsideChunk.x,
             coordinatesInsideChunk.y, out portalSpawnLocation);
 
         GameObject portalGameObject = Instantiate(mainLevelPortal, portalSpawnLocation, Quaternion.identity);
-        Portal portal = portalGameObject.GetComponent<Portal>();
+        Portal portal = portalGameObject.GetComponentInChildren<Portal>();
+
+        Debug.Log("Pulled portal component:" + portal);
 
         if (portal == null)
             return;
