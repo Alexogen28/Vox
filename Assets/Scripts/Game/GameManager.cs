@@ -7,10 +7,13 @@ public class GameManager : MonoBehaviour
     [Header("Managers")]
     [SerializeField] public PlayerController playerController;
     [SerializeField] public DecorationController decorationController;
+    [SerializeField] public ObjectiveManager objectiveManager;
     [SerializeField] public InventoryManager inventoryManager;
     [SerializeField] public InterfaceManager interfaceManager;
     [SerializeField] public ItemGenerator itemGenerator;
     [SerializeField] public WorldManager worldManager;
+    [SerializeField] public LevelManager levelManager;
+
 
     [Header("Item List")]
     [SerializeField] private List<BaseItemSO> availableItemsList;

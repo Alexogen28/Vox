@@ -6,8 +6,7 @@ using UnityEngine;
 public class InventoryManager : MonoBehaviour
 {
     [Header("Controllers and Managers")]
-    [SerializeField] private PlayerController playerController;
-    [SerializeField] private ItemGenerator itemGenerator;
+    [SerializeField] private GameManager gameManager;
 
     [Header("UI Transform")]
     [SerializeField] private Transform positionForWeaponInUI;
@@ -185,7 +184,7 @@ public class InventoryManager : MonoBehaviour
         currentWeaponSlot = slotToEquipFrom;
         WeaponItem weaponToEquip = inventorySlots[slotToEquipFrom].GetItemInSlot() as WeaponItem;
 
-        Transform rotationOfWeapon = playerController.gameObject.transform.GetChild(0);
+        Transform rotationOfWeapon = gameManager.playerController.gameObject.transform.GetChild(0);
 
         GameObject weaponToInstantiate = Instantiate(weaponToEquip.prefab, positionForWeaponInUI.position, rotationOfWeapon.rotation, positionForWeaponInUI);
 
@@ -198,7 +197,7 @@ public class InventoryManager : MonoBehaviour
         currentEquipedWeapon = weaponComponent;
         weaponComponent.Init(weaponToEquip);
 
-        playerController.actions.gunEnd = weaponComponent.GetMuzzle();
+        gameManager.playerController.actions.gunEnd = weaponComponent.GetMuzzle();
 
 
         for (int i = 0; i < weaponComponent.GetMaxChambers(); i++)
@@ -263,7 +262,7 @@ public class InventoryManager : MonoBehaviour
     {
         foreach(BaseItemSO item in itemsList)
         {
-            itemGenerator.GenerateItemAndAddToInventory(item);
+            gameManager.itemGenerator.GenerateItemAndAddToInventory(item);
         }
     }
 
@@ -320,9 +319,9 @@ public class InventoryManager : MonoBehaviour
         FireableBulletSO pickedBullet = projectiles[0];
         MagicalBulletSO pickedMagic = magics[0];
 
-        itemGenerator.GenerateItemAndAddToInventory(pickedWeapon);
-        itemGenerator.GenerateItemAndAddToInventory(pickedBullet);
-        itemGenerator.GenerateItemAndAddToInventory(pickedMagic);
+        gameManager.itemGenerator.GenerateItemAndAddToInventory(pickedWeapon);
+        gameManager.itemGenerator.GenerateItemAndAddToInventory(pickedBullet);
+        gameManager.itemGenerator.GenerateItemAndAddToInventory(pickedMagic);
 
         HandleEquipWeapon(0);
     }

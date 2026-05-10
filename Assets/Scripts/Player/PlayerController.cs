@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     public PlayerActions actions;
     public Health health;
 
+    public Vector3 PlayerPosition => transform.position;
 
     public void GetAllComponents()
     {
@@ -32,7 +33,6 @@ public class PlayerController : MonoBehaviour
         actions.FireWeapon(inputs.attackPressed);
         actions.ReloadWeapon(inputs.reloadPressed);
     }
-    
 
     private void HandleMovement()
     {

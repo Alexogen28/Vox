@@ -8,6 +8,7 @@ public enum AvailableSeedKeys
     SurfaceDetails,
 
     SpawnPoint,
+    SpawnChunk,
 
     Cave,
     Dungeon,

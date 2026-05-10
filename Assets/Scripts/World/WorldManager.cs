@@ -15,18 +15,9 @@ using UnityEngine;
 */
 
 
-
-// public enum Level
-// {
-//     Surface,
-//     UpperCaves,
-//     InnerDepths,
-//     UndergroundBog,
-// }
-
 public class WorldManager : MonoBehaviour
 {
-    [Header("Relevant Managers")]
+    [Header("Managers")]
     [SerializeField] private GameManager gameManager;
 
     [Header("World Stats")]
@@ -46,13 +37,10 @@ public class WorldManager : MonoBehaviour
     [SerializeField] private int worldSeed = 12345;
     [SerializeField] private bool randomiseIntOnPlay = true;
 
-
     public int seedMinimumValue = 1;
     public int seedMaximumValue = int.MaxValue;
     
-
     //Please note that level is stored and always used as an SO!    
-    public LevelSO currentLevel;
     private Vector3Int worldSize;
     private Dictionary<Vector3Int, VoxelChunk> worldChunks = new();
 
@@ -115,7 +103,7 @@ public class WorldManager : MonoBehaviour
 
     public void GenerateWorld(LevelSO level)
     {
-        currentLevel = level;
+        gameManager.levelManager.SetCurrentLevel(level);
         
         if(worldChunks.Count != 0)
             ClearWorld();
@@ -150,6 +138,8 @@ public class WorldManager : MonoBehaviour
             DeterminePlayerSpawnLocationOnSurface();
         else
             DeterminePlayerSpawnLocation();
+
+        gameManager.objectiveManager.SpawnPortals();
     }
 
     public void GenerateWorldOnStartup()
@@ -184,7 +174,7 @@ public class WorldManager : MonoBehaviour
      */
     private void DeterminePlayerSpawnLocation()
     {
-        Vector3Int spawnChunk = GetRandomChunkCoords();
+        Vector3Int spawnChunk = GetRandomChunkCoords(false);
         spawnChunk.y = worldSizeY - 1;
 
         System.Random spawnRandom = Seed.CreateRandom(worldSeed, AvailableSeedKeys.SpawnPoint, spawnChunk);
@@ -205,7 +195,7 @@ public class WorldManager : MonoBehaviour
      */
     public void DeterminePlayerSpawnLocationOnSurface()
     {
-        Vector3Int spawnChunk = GetRandomChunkCoords();
+        Vector3Int spawnChunk = GetRandomChunkCoords(true);
         spawnChunk.y = 0;
 
         int xInChunk = (int)Random.Range(spawnChunk.x * chunkSize * voxelSize,
@@ -264,7 +254,7 @@ public class WorldManager : MonoBehaviour
         worldChunks.Clear();
     }
 
-    public Vector3Int GetRandomChunkCoords(bool avoidEdges = false)
+    public Vector3Int GetRandomChunkCoords(bool avoidEdges)
     {
         int minX = avoidEdges && worldSize.x > 2 ? 1 : 0;
         int maxX = avoidEdges && worldSize.x > 2 ? worldSize.x - 1 : worldSize.x;

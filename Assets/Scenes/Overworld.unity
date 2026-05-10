@@ -312,6 +312,7 @@ GameObject:
   - component: {fileID: 91779841}
   - component: {fileID: 91779840}
   - component: {fileID: 91779839}
+  - component: {fileID: 91779842}
   m_Layer: 0
   m_Name: Portal
   m_TagString: LevelPortal
@@ -408,6 +409,20 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 91779837}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &91779842
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 91779837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86991849c82a7e840abdacd6c9eefcb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  levelToTeleportTo: {fileID: 0}
+  gameManager: {fileID: 0}
 --- !u!224 &95644611 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2438303329582738427, guid: 514a3458fc84c3a45b49651d8967be6a, type: 3}
@@ -550,7 +565,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81afcd72b5c97edb7ba56469928fa129, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 0}
+  gameManager: {fileID: 1452854106}
   decorationDensity: 16
   availableDecorations:
   - level: {fileID: 11400000, guid: 5dc92af5119c5fd23ad2c65e03645188, type: 2}
@@ -1206,8 +1221,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ba12446b693c21459442a22eda5cb48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerController: {fileID: 1998048683}
-  itemGenerator: {fileID: 703678169}
+  gameManager: {fileID: 1452854106}
   positionForWeaponInUI: {fileID: 123983105}
   maxSlots: 6
   basicBulletSO: {fileID: 11400000, guid: 44fd92df575050ba5875621d16a70718, type: 2}
@@ -3960,7 +3974,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerController: {fileID: 1998048683}
-  decorationController: {fileID: 0}
+  decorationController: {fileID: 130857143}
   inventoryManager: {fileID: 335019568}
   interfaceManager: {fileID: 504253332}
   itemGenerator: {fileID: 703678169}
@@ -5202,7 +5216,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5874b443c6b8e5e49a41f7a6b3fbb59f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 0}
+  gameManager: {fileID: 1452854106}
   worldSizeX: 8
   worldSizeY: 1
   worldSizeZ: 8
@@ -5254,7 +5268,7 @@ GameObject:
   - component: {fileID: 1998048687}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

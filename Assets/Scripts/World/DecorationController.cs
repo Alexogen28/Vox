@@ -67,7 +67,7 @@ public class DecorationController : MonoBehaviour
     private void DecorateChunk(VoxelChunk chunk, List<DecorationDefinitionSO> decorations)
     {
         int runtimeDecorationDensity = decorationDensity;
-        if(gameManager.worldManager.currentLevel.levelName == LevelName.Surface)
+        if(gameManager.levelManager.CurrentLevel.levelName == LevelName.Surface)
             runtimeDecorationDensity *= 3;
 
         for (int i = 0; i < runtimeDecorationDensity; i++)
@@ -172,7 +172,7 @@ public class DecorationController : MonoBehaviour
         if (decorationDefinition.ClearanceHeight < 0)
             return false;
 
-        if(direction > 0 && gameManager.worldManager.currentLevel.levelName == LevelName.Surface)
+        if(direction > 0 && gameManager.levelManager.CurrentLevel.levelName == LevelName.Surface)
             return false;
 
         GameObject newDecoration = Instantiate(decorationDefinition.prefab, spawnPosition, 
