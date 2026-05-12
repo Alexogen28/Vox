@@ -2,9 +2,7 @@ using UnityEngine;
 
 public class UpperCavesChunk : VoxelChunk
 {
-    private float noiseScale = 0.02f;
-    private float noiseHeightScale = 0.5f;
-    private float airTreshold = 0.5f;
+    private float noiseScale = 0.01f;
 
     private float[,] mapXOY;
     private float[,] mapXOZ;
@@ -26,11 +24,12 @@ public class UpperCavesChunk : VoxelChunk
         Vector2 xOffset = Seed.GetNoiseOffset(worldSeed, AvailableSeedKeys.UpperCavesTerrain, new Vector3Int(0, 0, 0));
         Vector2 yOffset = Seed.GetNoiseOffset(worldSeed, AvailableSeedKeys.UpperCavesTerrain, new Vector3Int(1, 0, 0));
         Vector2 zOffset = Seed.GetNoiseOffset(worldSeed, AvailableSeedKeys.UpperCavesTerrain, new Vector3Int(2, 0, 0));
+        Vector2 layerOffset = Seed.GetNoiseOffset(worldSeed, AvailableSeedKeys.UpperCavesTerrain, new Vector3Int(chunkCoord.y, 3, 0));
         //Vector2 globalOffset = Seed.GetNoiseOffset(worldSeed, AvailableSeedKeys.UpperCavesTerrain);
 
         int solidCount = 0;
 
-        int x, y, z;
+        int x, y, z = 0;
         float worldX, worldY, worldZ;
 
         //Calculate the YOZ height plane
@@ -50,7 +49,7 @@ public class UpperCavesChunk : VoxelChunk
         //Calculate the XOZ height plane
         for (x = 0; x < chunkSize; x++)
         {
-            for(z = 0; z < chunkSize; z++)
+            for (z = 0; z < chunkSize; z++)
             {
                 worldX = chunkVoxelWorldPosition.x + x;
                 worldZ = chunkVoxelWorldPosition.z + z;
@@ -76,19 +75,76 @@ public class UpperCavesChunk : VoxelChunk
         }
 
 
-        for(x = 0; x < chunkSize;x++)
-            for(y = 0; y < chunkSize; y++)
-                for(z = 0; z < chunkSize;z++)
+        for (x = 0; x < chunkSize; x++)
+            for (y = 0; y < chunkSize; y++)
+                for (z = 0; z < chunkSize; z++)
                 {
-                    float combinedValue = 0;
-                    combinedValue += mapXOY[x, y];
-                    combinedValue += mapXOZ[x, z];
-                    combinedValue += mapYOZ[y, z];
-                    combinedValue /= 3;
+                    float caveCenterY = Mathf.PerlinNoise(
+                        (chunkVoxelWorldPosition.x + x + layerOffset.x) * noiseScale,
+                        (chunkVoxelWorldPosition.z + z + layerOffset.y) * noiseScale
+                        ) * chunkSize;
 
-                    if (combinedValue > airTreshold)
+                    float distFromCenter = Mathf.Abs(y - caveCenterY);
+
+                    float thicknessNoise = (mapXOY[x, y] + mapYOZ[y, z]) / 2f;
+                    float bandThickness = Mathf.Lerp(8f, 20f, thicknessNoise);
+
+                    if (distFromCenter < bandThickness)
                         voxels[x, y, z] = 1;
                 }
+
+        //fill in the sides of the cave if we're at the edge
+        //or the top of the cave if we're on the top chunk
+        BuildEdges();
+    }
+
+    private void BuildEdges()
+    {
+        int x, y, z;
+        if (chunkCoord.x == 0)
+        {
+            for (z = 0; z < chunkSize; z++)
+                for (y = 0; y < chunkSize; y++)
+                {
+                    voxels[0, y, z] = 1;
+                }
+        }
+
+        if (chunkCoord.x == worldSize.x - 1)
+        {
+            for (z = 0; z < chunkSize; z++)
+                for (y = 0; y < chunkSize; y++)
+                {
+                    voxels[chunkSize - 1, y, z] = 1;
+                }
+        }
+
+        if (chunkCoord.z == 0)
+        {
+            for (x = 0; x < chunkSize; x++)
+                for (y = 0; y < chunkSize; y++)
+                {
+                    voxels[x, y, 0] = 1;
+                }
+        }
+
+        if (chunkCoord.z == worldSize.z - 1)
+        {
+            for (x = 0; x < chunkSize; x++)
+                for (y = 0; y < chunkSize; y++)
+                {
+                    voxels[x, y, chunkSize - 1] = 1;
+                }
+        }
+
+        if (chunkCoord.y == worldSize.y - 1)
+        {
+            for (x = 0; x < chunkSize; x++)
+                for (z = 0; z < chunkSize; z++)
+                {
+                    voxels[x, chunkSize - 1, z] = 1;
+                }
+        }
     }
 
     public void CarveDescent(int centerX, int centerZ, bool topChunk, int radius)

@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelName: 0
   allowedPlacementPositions: 01000000
+  availableMaterial: {fileID: 2100000, guid: 6b699223d29e6e24ba2c92788ee0c9be, type: 2}

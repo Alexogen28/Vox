@@ -19,7 +19,7 @@ public class SurfaceChunk : VoxelChunk
 
         int solidCount = 0;
 
-        //Debug.Log($"Generating chunk data for {gameObject.name}");
+        Debug.Log($"Generating chunk data for {gameObject.name}");
 
         for (int x = 0; x < chunkSize; x++)
             for (int z = 0; z < chunkSize; z++)
@@ -44,7 +44,7 @@ public class SurfaceChunk : VoxelChunk
                 }
 
                 if (x == 0 && z == 0)
-                    //Debug.Log($"{gameObject.name}: sample height = {height}");
+                    Debug.Log($"{gameObject.name}: sample height = {height}");
 
                 for (int y = 0; y < chunkSize; y++)
                 {
@@ -55,6 +55,11 @@ public class SurfaceChunk : VoxelChunk
                         solidCount++;
                 }
             }
-        //Debug.Log($"{gameObject.name}: solid voxels written = {solidCount}");
+        Debug.Log($"{gameObject.name}: solid voxels written = {solidCount}");
+    }
+
+    public override void CarveDescent()
+    {
+        
     }
 }

@@ -2,6 +2,7 @@ using UnityEngine;
 
 public enum AvailableSeedKeys
 {
+    Surface,
     SurfaceTerrain,
     SurfaceBiome,
     SurfaceDetails,
@@ -9,8 +10,11 @@ public enum AvailableSeedKeys
     SpawnPoint,
     SpawnChunk,
 
+    UpperCaves,
     UpperCavesTerrain,
     UpperCavesDetails,
+
+    Descent,
 
     Dungeon,
     Item,

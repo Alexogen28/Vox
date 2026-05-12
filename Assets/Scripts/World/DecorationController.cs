@@ -47,8 +47,16 @@ public class DecorationController : MonoBehaviour
     [Header("For Debugging")]
     [SerializeField] private Transform decorationsRoot;
 
+    [Header("Parent of all decoration objects")]
+    [SerializeField] private GameObject decorationsParent;
+
     public void DecorateWorld(LevelSO level)
     {
+        foreach(Transform child in decorationsParent.transform)
+        {
+            Destroy(child.gameObject);
+        }
+
         List<DecorationDefinitionSO> availableDecorations = GetAllDecorationsForLevel(level);
         //Debug.Log("Snatched all available decorations");
 
@@ -221,6 +229,8 @@ public class DecorationController : MonoBehaviour
                 gameManager.worldManager.GetWorldSeed(), spawnPosition, decorationDefinition.materialsList);
             //Debug.Log("Initialised Voxel object" + voxelObject.name);
         }
+
+        newDecoration.transform.parent = decorationsParent.transform;
         return true;
     }
 

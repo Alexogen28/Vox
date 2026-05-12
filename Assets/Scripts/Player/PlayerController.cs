@@ -46,6 +46,9 @@ public class PlayerController : MonoBehaviour
 
     public void TeleportPlayer(Vector3 coords)
     {
+        CharacterController cc = GetComponent<CharacterController>();
+        cc.enabled = false;
         transform.position = coords;
+        cc.enabled = true;
     }
 }

@@ -15,6 +15,7 @@ public class Portal : MonoBehaviour
 
     private void TeleportToNextLevel()
     {
+        Destroy(gameObject);
         gameManager.worldManager.GenerateWorld(levelToTeleportTo);
     }
 

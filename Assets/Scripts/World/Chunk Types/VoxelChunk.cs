@@ -14,6 +14,8 @@ public abstract class VoxelChunk : MonoBehaviour
     public int chunkSize;
     public float voxelSize;
     public int worldSeed;
+
+    //coordinates of the chunk in gridspace
     public Vector3Int chunkCoord;
 
     //coordinates of the chunk's [0,0,0] coordinate in world space!
@@ -57,6 +59,8 @@ public abstract class VoxelChunk : MonoBehaviour
     public Vector3 WorldChunkCoord => worldChunkCoord;
 
     protected abstract void GenerateChunkData();
+
+    public abstract void CarveDescent();
 
     protected virtual void GenerateMesh()
     {
@@ -267,11 +271,11 @@ public abstract class VoxelChunk : MonoBehaviour
      */
     public bool TryGetBottomOYVoxelInChunk(int x, int z, out Vector3Int positionInChunk)
     {
-        for (int y = 0; y < chunkSize - 1; y++)
+        for (int y = 1; y < chunkSize - 1; y++)
         {
             if (voxels[x, y, z] != 0 && voxels[x, y + 1, z] == 0)
             {
-                positionInChunk = new Vector3Int(x, y - 1, z);
+                positionInChunk = new Vector3Int(x, y, z);
                 return true;
             }
         }

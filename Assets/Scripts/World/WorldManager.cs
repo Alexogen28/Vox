@@ -104,8 +104,8 @@ public class WorldManager : MonoBehaviour
     public void GenerateWorld(LevelSO level)
     {
         gameManager.levelManager.SetCurrentLevel(level);
-        
-        if(worldChunks.Count != 0)
+
+        if (worldChunks.Count != 0)
             ClearWorld();
 
         Debug.Log("Generating world...");
@@ -113,8 +113,42 @@ public class WorldManager : MonoBehaviour
         /*
          * First pass of world generation
          * Sets down all chunks in their base form
+         * and stretches out a portal across the floor of the world
+         */
+        FirstPassGeneration(level);
+
+        /*
+         * Second pass of world generation
+         * Determines the possible descent positions 
+         */
+        SecondGenerationPass(level);
+
+        /*
+         * Third pass of world generation
+         * Adds edge layers to confine the player
          */
 
+        /*
+         * Fourth pass of world generation
+         * Adds decorations to the world
+         */
+        gameManager.decorationController.DecorateWorld(level);
+
+        if (level.levelName == LevelName.Surface)
+            DeterminePlayerSpawnLocationOnSurface();
+        else
+            DeterminePlayerSpawnLocation();
+
+
+        RenderSettings.fog = level.hasFog;
+        RenderSettings.fogDensity = level.fogDensity;
+        RenderSettings.fogColor = level.fogColour;
+        RenderSettings.ambientLight = level.ambientLightColour;
+        RenderSettings.fogMode = level.fogMode;
+    }
+
+    private void FirstPassGeneration(LevelSO level)
+    {
         for (int x = 0; x < worldSizeX; x++)
         {
             if (level.levelName == LevelName.Surface)
@@ -135,21 +169,19 @@ public class WorldManager : MonoBehaviour
                     }
         }
 
-        /*
-         * Second pass of world generation
-         * Determines the possible descent positions 
-         */
 
-        //initialise world decoration
-        //DecorationController will then call back WorldManager for details
-        gameManager.decorationController.DecorateWorld(level);
+        //spawns 1 large portal across the floor of the level
+        gameManager.objectiveManager.SpawnPortal();
+    }
 
-        if(level.levelName == LevelName.Surface)
-            DeterminePlayerSpawnLocationOnSurface();
-        else
-            DeterminePlayerSpawnLocation();
+    private void SecondGenerationPass(LevelSO level)
+    {
+        for (int y = worldSizeY - 1; y >= 0; y--)
+        {
+            Vector3Int chunkToDescendFrom = GetRandomDescentChunk(level.shouldAvoidEdges, y, level);
 
-        gameManager.objectiveManager.SpawnPortals();
+            worldChunks[chunkToDescendFrom].CarveDescent();
+        }
     }
 
     public void GenerateWorldOnStartup()
@@ -185,7 +217,7 @@ public class WorldManager : MonoBehaviour
     private void DeterminePlayerSpawnLocation()
     {
         Vector3Int spawnChunk = GetRandomChunkCoords(false);
-        spawnChunk.y = worldSizeY - 1;
+        spawnChunk.y = worldSizeY - 2;
 
         System.Random spawnRandom = Seed.CreateRandom(worldSeed, AvailableSeedKeys.SpawnPoint, spawnChunk);
 
@@ -195,7 +227,8 @@ public class WorldManager : MonoBehaviour
         Vector3 spawnLocation = new Vector3();
         worldChunks[spawnChunk].TryGetBottomOYVoxel(xInChunk, zInChunk, out spawnLocation);
 
-        spawnLocation.y += voxelSize;
+        spawnLocation.y += voxelSize*2;
+        Debug.Log("Determined spawn location y:" + spawnLocation.y);
 
         gameManager.playerController.TeleportPlayer(spawnLocation);
     }
@@ -238,7 +271,7 @@ public class WorldManager : MonoBehaviour
         chunkGameObject.layer = LayerMask.NameToLayer("Ground");
 
         VoxelChunk chunk = (VoxelChunk)chunkGameObject.AddComponent(levelType);
-        chunk.Initialize(chunkSize, voxelSize, baseMat, worldSeed, coord, worldSize, worldCoord, this, level);
+        chunk.Initialize(chunkSize, voxelSize, level.availableMaterial, worldSeed, coord, worldSize, worldCoord, this, level);
 
         worldChunks.Add(coord, chunk);
         //Debug.Log($"Creating chunk at {coord} / worldPos {worldCoord}");
@@ -276,10 +309,29 @@ public class WorldManager : MonoBehaviour
         int minZ = avoidEdges && worldSize.z > 2 ? 1 : 0;
         int maxZ = avoidEdges && worldSize.z > 2 ? worldSize.z - 1 : worldSize.z;
 
+        System.Random random = Seed.CreateRandom(worldSeed, AvailableSeedKeys.SpawnPoint);
+
         return new Vector3Int(
-            Random.Range(minX, maxX),
-            Random.Range(minY, maxY),
-            Random.Range(minZ, maxZ)
+            random.Next(minX, maxX),
+            random.Next(minY, maxY),
+            random.Next(minZ, maxZ)
         );
+    }
+
+    public Vector3Int GetRandomDescentChunk(bool avoidEdges, int yLayer, LevelSO currentLevel)
+    {
+        int minX = avoidEdges && worldSize.x > 2 ? 1 : 0;
+        int maxX = avoidEdges && worldSize.x > 2 ? worldSize.x - 1 : worldSize.x;
+
+        int minZ = avoidEdges && worldSize.z > 2 ? 1 : 0;
+        int maxZ = avoidEdges && worldSize.z > 2 ? worldSize.z - 1 : worldSize.z;
+
+        System.Random random = Seed.CreateRandom(worldSeed, currentLevel.levelKey, new Vector3Int(0,yLayer,0));
+
+        return new Vector3Int(
+            random.Next(minX, maxX),
+            yLayer,
+            random.Next(minZ, maxZ)
+            );
     }
 }
