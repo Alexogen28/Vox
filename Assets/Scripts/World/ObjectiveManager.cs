@@ -66,7 +66,7 @@ public class ObjectiveManager : MonoBehaviour
     {
         Vector3 spawnLocation = new Vector3(
             gameManager.worldManager.worldSizeX * gameManager.worldManager.chunkSize * gameManager.worldManager.voxelSize * 0.5f,
-            0,
+            -1,
             gameManager.worldManager.worldSizeZ * gameManager.worldManager.chunkSize * gameManager.worldManager.voxelSize * 0.5f
             );
 
@@ -76,7 +76,7 @@ public class ObjectiveManager : MonoBehaviour
             gameManager.worldManager.voxelSize;
 
         GameObject portalGameObject = Instantiate(mainLevelPortal, spawnLocation, Quaternion.identity);
-        Portal portal = portalGameObject.GetComponent<Portal>();
+        Portal portal = portalGameObject.GetComponentInChildren<Portal>();
         portal.Initialise(gameManager, gameManager.levelManager.DetermineNextLevel());
         portalGameObject.transform.localScale = new Vector3(portalScaleX, 1, portalScaleZ);
     }

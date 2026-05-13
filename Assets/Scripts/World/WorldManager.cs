@@ -42,7 +42,7 @@ public class WorldManager : MonoBehaviour
     
     //Please note that level is stored and always used as an SO!    
     private Vector3Int worldSize;
-    private Dictionary<Vector3Int, VoxelChunk> worldChunks = new();
+    public Dictionary<Vector3Int, VoxelChunk> worldChunks = new();
 
     public int GetWorldSeed() => worldSeed;
 
@@ -176,6 +176,13 @@ public class WorldManager : MonoBehaviour
 
     private void SecondGenerationPass(LevelSO level)
     {
+        if(level.levelKey == AvailableSeedKeys.Surface)
+        {
+            Vector3Int chunkToDescendFrom = GetRandomDescentChunk(level.shouldAvoidEdges, 0, level);
+            worldChunks[chunkToDescendFrom].CarveDescent();
+            return;
+        }
+
         for (int y = worldSizeY - 1; y >= 0; y--)
         {
             Vector3Int chunkToDescendFrom = GetRandomDescentChunk(level.shouldAvoidEdges, y, level);
@@ -271,7 +278,7 @@ public class WorldManager : MonoBehaviour
         chunkGameObject.layer = LayerMask.NameToLayer("Ground");
 
         VoxelChunk chunk = (VoxelChunk)chunkGameObject.AddComponent(levelType);
-        chunk.Initialize(chunkSize, voxelSize, level.availableMaterial, worldSeed, coord, worldSize, worldCoord, this, level);
+        chunk.Initialize(chunkSize, voxelSize, level.availableMaterial, worldSeed, coord, worldSize, worldCoord, gameManager, level);
 
         worldChunks.Add(coord, chunk);
         //Debug.Log($"Creating chunk at {coord} / worldPos {worldCoord}");

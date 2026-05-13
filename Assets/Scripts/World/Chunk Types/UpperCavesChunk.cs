@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using UnityEngine;
 
 public class UpperCavesChunk : VoxelChunk
@@ -144,52 +145,6 @@ public class UpperCavesChunk : VoxelChunk
                 {
                     voxels[x, chunkSize - 1, z] = 1;
                 }
-        }
-    }
-
-    public void CarveDescent(int centerX, int centerZ, bool topChunk, int radius)
-    {
-        Vector3Int positionToCarve = new Vector3Int();  
-
-        if(topChunk)
-        {
-            TryGetBottomOYVoxelInChunk(centerX, centerZ, out positionToCarve);
-            CarveDown(positionToCarve, radius);
-        }
-        else
-        {
-            TryGetTopOYVoxelInChunk(centerX, centerZ, out positionToCarve);
-            CarveUp(positionToCarve, radius);
-        }
-
-        RedrawMesh();
-    }
-
-    private void CarveDown(Vector3Int positionToCarve, int radius)
-    {
-        for (int y = positionToCarve.y; y >= 0; y--)
-        {
-            for(int x = Mathf.Max(0, positionToCarve.x - radius); x <= Mathf.Min(positionToCarve.x + radius, chunkSize-1); x++)
-            {
-                for (int z = Mathf.Max(0, positionToCarve.z - radius); z <= Mathf.Min(positionToCarve.z + radius, chunkSize-1); z++)
-                {
-                    voxels[x, y, z] = 0;
-                }
-            }
-        }
-    }
-
-    private void CarveUp(Vector3Int positionToCarve, int radius)
-    {
-        for (int y = positionToCarve.y; y <= chunkSize-1; y++)
-        {
-            for (int x = Mathf.Max(0, positionToCarve.x - radius); x <= Mathf.Min(positionToCarve.x + radius, chunkSize - 1); x++)
-            {
-                for (int z = Mathf.Max(0, positionToCarve.z - radius); z <= Mathf.Min(positionToCarve.z + radius, chunkSize - 1); z++)
-                {
-                    voxels[x, y, z] = 0;
-                }
-            }
         }
     }
 }

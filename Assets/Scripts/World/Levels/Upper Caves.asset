@@ -15,3 +15,8 @@ MonoBehaviour:
   levelName: 1
   allowedPlacementPositions: 000000000100000002000000030000000400000005000000
   availableMaterial: {fileID: 2100000, guid: 26db24dda616c4d6b85fe208642c2a81, type: 2}
+  hasFog: 1
+  fogDensity: 0.015
+  fogColour: {r: 0.08, g: 0.06, b: 0.1, a: 0}
+  fogMode: 3
+  ambientLightColour: {r: 0.4, g: 0.3, b: 0.5, a: 0}

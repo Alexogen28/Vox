@@ -43,6 +43,7 @@ public class DecorationController : MonoBehaviour
 
     [Header("Available Decorations")]
     [SerializeField] private List<LevelDecorationCollection> availableDecorations;
+    [SerializeField] private GameObject descentWell;
 
     [Header("For Debugging")]
     [SerializeField] private Transform decorationsRoot;

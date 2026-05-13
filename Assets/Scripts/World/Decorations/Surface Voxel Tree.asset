@@ -15,8 +15,8 @@ MonoBehaviour:
   decorationName: Surface Voxel Tree
   prefab: {fileID: 950679644620383915, guid: 363242ea009183f8ba60eea05208c878, type: 3}
   materialsList:
-  - {fileID: 2100000, guid: 15e0180b4aa1a91c49c4d51374a1cf7f, type: 2}
-  - {fileID: 2100000, guid: 9fd979e54d74a3122b4416a13c65478e, type: 2}
+  - {fileID: 2100000, guid: 6e92e195280a05445a52a7d9340c3f3e, type: 2}
+  - {fileID: 2100000, guid: 5a335a569df50364db3b642f683be955, type: 2}
   spawnChance: 1
   clearanceHeight: 4
   flatnessRadius: 1

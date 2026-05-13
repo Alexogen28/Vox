@@ -15,7 +15,7 @@ MonoBehaviour:
   decorationName: Surface Voxel Rock
   prefab: {fileID: 2137983150111267872, guid: 7fe65dc27915d6599bcd273beee14a39, type: 3}
   materialsList:
-  - {fileID: 2100000, guid: 26db24dda616c4d6b85fe208642c2a81, type: 2}
+  - {fileID: 2100000, guid: 2281db1b936dcd144ad21346714b86be, type: 2}
   spawnChance: 1
   clearanceHeight: 4
   flatnessRadius: 1

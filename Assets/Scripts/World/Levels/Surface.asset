@@ -12,6 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 276cfa1c913d305829faa8dc9d0450ba, type: 3}
   m_Name: Surface
   m_EditorClassIdentifier: 
+  levelKey: 0
   levelName: 0
   allowedPlacementPositions: 01000000
-  availableMaterial: {fileID: 2100000, guid: 6b699223d29e6e24ba2c92788ee0c9be, type: 2}
+  availableMaterial: {fileID: 2100000, guid: bdcc8d255400a2844b74a3584ff97a1c, type: 2}
+  shouldAvoidEdges: 1
+  hasFog: 0
+  fogDensity: 0
+  fogColour: {r: 0, g: 0, b: 0, a: 0}
+  fogMode: 3
+  ambientLightColour: {r: 0, g: 0, b: 0, a: 0}

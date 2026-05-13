@@ -14,8 +14,8 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 10
-  m_Fog: 0
-  m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  m_Fog: 1
+  m_FogColor: {r: 0.1245601, g: 0.117524035, b: 0.1792453, a: 1}
   m_FogMode: 3
   m_FogDensity: 0.01
   m_LinearFogStart: 0
@@ -26,14 +26,14 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 9af23ba5fa5364ff598888460e0e2759, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
   m_HaloTexture: {fileID: 0}
   m_SpotCookie: {fileID: 10001, guid: 0000000000000000e000000000000000, type: 0}
   m_DefaultReflectionMode: 0
-  m_DefaultReflectionResolution: 128
+  m_DefaultReflectionResolution: 512
   m_ReflectionBounces: 1
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
@@ -449,7 +449,12 @@ MonoBehaviour:
     decorations:
     - {fileID: 11400000, guid: dfaaeced2fbd5cb22aaa36d52056f610, type: 2}
     - {fileID: 11400000, guid: d43f1a9a1c0ba9216be4dc0a41e83a40, type: 2}
+  - level: {fileID: 11400000, guid: 764720fbff8917183a407d3b62518929, type: 2}
+    decorations:
+    - {fileID: 11400000, guid: d43f1a9a1c0ba9216be4dc0a41e83a40, type: 2}
+  descentWell: {fileID: 8579559957161697300, guid: dd536d456aac33745af15d94c63483e7, type: 3}
   decorationsRoot: {fileID: 0}
+  decorationsParent: {fileID: 808359253}
 --- !u!1001 &139180192
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1233,7 +1238,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &410087040
 Light:
   m_ObjectHideFlags: 0
@@ -2357,6 +2362,37 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8c187acf5472f39418ba6f7cbc630b35, type: 3}
+--- !u!1 &808359253
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 808359254}
+  m_Layer: 0
+  m_Name: DecorationsParent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &808359254
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 808359253}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!224 &810118524 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3561824328823568958, guid: 8c187acf5472f39418ba6f7cbc630b35, type: 3}
@@ -5161,7 +5197,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameManager: {fileID: 1452854106}
   worldSizeX: 8
-  worldSizeY: 1
+  worldSizeY: 4
   worldSizeZ: 8
   chunkSize: 64
   voxelSize: 0.5
@@ -5235,7 +5271,7 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.6
-  m_Height: 2.5
+  m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &1998048680
@@ -5247,7 +5283,7 @@ Transform:
   m_GameObject: {fileID: 1998048678}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 50, y: 100, z: 50}
+  m_LocalPosition: {x: 50, y: 122.5, z: 50}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5268,10 +5304,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   baseMoveSpeed: 5
-  baseJumpForce: 5
+  baseJumpForce: 3
   gravity: -9.81
   groundCheck: {fileID: 1514169148}
-  raycastDistance: 0.3
+  raycastDistance: 0.5
   groundMask:
     serializedVersion: 2
     m_Bits: 512
@@ -6150,3 +6186,4 @@ SceneRoots:
   - {fileID: 870576402}
   - {fileID: 1563470622}
   - {fileID: 428022076}
+  - {fileID: 808359254}

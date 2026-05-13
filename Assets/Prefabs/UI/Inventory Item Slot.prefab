@@ -149,3 +149,4 @@ MonoBehaviour:
   slotIcon: {fileID: 9154860357279683496}
   emptySprite: {fileID: 21300000, guid: 786aa4bc4afe21e4aab9aa3fa82d0c8b, type: 3}
   blockedSprite: {fileID: 21300000, guid: dfcc201f2cac247418588a8f8601299a, type: 3}
+  selectionBorderSprite: {fileID: 0}
