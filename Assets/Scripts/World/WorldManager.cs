@@ -37,12 +37,13 @@ public class WorldManager : MonoBehaviour
     [SerializeField] private int worldSeed = 12345;
     [SerializeField] private bool randomiseIntOnPlay = true;
 
+    
     public int seedMinimumValue = 1;
     public int seedMaximumValue = int.MaxValue;
     
-    //Please note that level is stored and always used as an SO!    
     private Vector3Int worldSize;
     public Dictionary<Vector3Int, VoxelChunk> worldChunks = new();
+
 
     public int GetWorldSeed() => worldSeed;
 
@@ -104,6 +105,7 @@ public class WorldManager : MonoBehaviour
     public void GenerateWorld(LevelSO level)
     {
         gameManager.levelManager.SetCurrentLevel(level);
+        gameManager.decorationController.ClearWellSpawnPositions();
 
         if (worldChunks.Count != 0)
             ClearWorld();
@@ -112,14 +114,15 @@ public class WorldManager : MonoBehaviour
 
         /*
          * First pass of world generation
-         * Sets down all chunks in their base form
+         * sets down all chunks in their base form
          * and stretches out a portal across the floor of the world
          */
         FirstPassGeneration(level);
 
         /*
          * Second pass of world generation
-         * Determines the possible descent positions 
+         * determines the possible descent positions 
+         * and stores them so Decoration Controller can then spawn wells
          */
         SecondGenerationPass(level);
 
@@ -133,6 +136,9 @@ public class WorldManager : MonoBehaviour
          * Adds decorations to the world
          */
         gameManager.decorationController.DecorateWorld(level);
+
+
+
 
         if (level.levelName == LevelName.Surface)
             DeterminePlayerSpawnLocationOnSurface();
@@ -186,7 +192,6 @@ public class WorldManager : MonoBehaviour
         for (int y = worldSizeY - 1; y >= 0; y--)
         {
             Vector3Int chunkToDescendFrom = GetRandomDescentChunk(level.shouldAvoidEdges, y, level);
-
             worldChunks[chunkToDescendFrom].CarveDescent();
         }
     }

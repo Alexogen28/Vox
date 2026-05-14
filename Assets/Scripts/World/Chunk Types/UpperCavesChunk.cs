@@ -4,6 +4,9 @@ using UnityEngine;
 public class UpperCavesChunk : VoxelChunk
 {
     private float noiseScale = 0.01f;
+    private float noiseHeightScale = 0.5f;
+    private float persistence = 0.3f;
+    private float lacunarity = 5.0f;
 
     private float[,] mapXOY;
     private float[,] mapXOZ;
@@ -27,8 +30,6 @@ public class UpperCavesChunk : VoxelChunk
         Vector2 zOffset = Seed.GetNoiseOffset(worldSeed, AvailableSeedKeys.UpperCavesTerrain, new Vector3Int(2, 0, 0));
         Vector2 layerOffset = Seed.GetNoiseOffset(worldSeed, AvailableSeedKeys.UpperCavesTerrain, new Vector3Int(chunkCoord.y, 3, 0));
         //Vector2 globalOffset = Seed.GetNoiseOffset(worldSeed, AvailableSeedKeys.UpperCavesTerrain);
-
-        int solidCount = 0;
 
         int x, y, z = 0;
         float worldX, worldY, worldZ;
@@ -77,22 +78,35 @@ public class UpperCavesChunk : VoxelChunk
 
 
         for (x = 0; x < chunkSize; x++)
-            for (y = 0; y < chunkSize; y++)
-                for (z = 0; z < chunkSize; z++)
-                {
-                    float caveCenterY = Mathf.PerlinNoise(
-                        (chunkVoxelWorldPosition.x + x + layerOffset.x) * noiseScale,
-                        (chunkVoxelWorldPosition.z + z + layerOffset.y) * noiseScale
-                        ) * chunkSize;
+            for (z = 0; z < chunkSize; z++)
+            {
+                float amplitude = noiseHeightScale * chunkSize;
+                float frequency = noiseScale;
+                float caveCenterY = 0.0f;
 
+                for (int i = 0; i < 3; i++)
+                {
+                    caveCenterY += Mathf.PerlinNoise(
+                        (chunkVoxelWorldPosition.x + x + layerOffset.x) * frequency,
+                        (chunkVoxelWorldPosition.z + z + layerOffset.y) * frequency
+                        ) * amplitude;
+
+                    amplitude *= persistence;
+                    frequency *= lacunarity;
+                }
+
+                for (y = 0; y < chunkSize; y++)
+                {
                     float distFromCenter = Mathf.Abs(y - caveCenterY);
 
                     float thicknessNoise = (mapXOY[x, y] + mapYOZ[y, z]) / 2f;
-                    float bandThickness = Mathf.Lerp(8f, 20f, thicknessNoise);
+                    float bandThickness = Mathf.Lerp(1f, 20f, thicknessNoise);
 
                     if (distFromCenter < bandThickness)
                         voxels[x, y, z] = 1;
                 }
+            }
+
 
         //fill in the sides of the cave if we're at the edge
         //or the top of the cave if we're on the top chunk

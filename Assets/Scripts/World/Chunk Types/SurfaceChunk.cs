@@ -5,6 +5,8 @@ public class SurfaceChunk : VoxelChunk
     [Header("Perlin Noise Customization")]
     [SerializeField] public float noiseScale = 0.02f;
     [SerializeField] public float noiseHeightScale = 0.5f;
+    private float persistence = 0.5f;
+    private float lacunarity = 2f;
 
     protected override void GenerateChunkData()
     {
@@ -26,21 +28,35 @@ public class SurfaceChunk : VoxelChunk
             {
                 float worldX = chunkVoxelWorldPosition.x + x;
                 float worldZ = chunkVoxelWorldPosition.z + z;
-                float height;
-                if(chunkCoord.x == 0 || chunkCoord.x == worldSize.x-1 || chunkCoord.z == 0 || chunkCoord.z == worldSize.z-1 )
+                float height = 0f;
+                float amplitude = noiseHeightScale * chunkSize;
+                float frequency = noiseScale;
+                if (chunkCoord.x == 0 || chunkCoord.x == worldSize.x-1 || chunkCoord.z == 0 || chunkCoord.z == worldSize.z-1 )
                 {
-                    float mountainNoiseScale = noiseHeightScale * 5.0f;
-                    height = Mathf.PerlinNoise(
-                    (worldX + globalOffset.x) * noiseScale,
-                    (worldZ + globalOffset.y) * noiseScale
-                    ) * (mountainNoiseScale * chunkSize);
+                    float mountainNoiseScale = noiseHeightScale * 3.0f;
+                    for (int octave = 0; octave < 4; octave++)
+                    {
+                        height += Mathf.PerlinNoise(
+                            (worldX + globalOffset.x) * frequency,
+                            (worldZ + globalOffset.y) * frequency
+                        ) * amplitude * mountainNoiseScale;
+
+                        amplitude *= persistence;
+                        frequency *= lacunarity;
+                    }
                 }
                 else
                 {
-                    height = Mathf.PerlinNoise(
-                    (worldX + globalOffset.x) * noiseScale,
-                    (worldZ + globalOffset.y) * noiseScale
-                    ) * (noiseHeightScale * chunkSize);
+                    for (int octave = 0; octave < 4; octave++)
+                    {
+                        height += Mathf.PerlinNoise(
+                            (worldX + globalOffset.x) * frequency,
+                            (worldZ + globalOffset.y) * frequency
+                        ) * amplitude;
+
+                        amplitude *= persistence;
+                        frequency *= lacunarity;
+                    }
                 }
 
                 //if (x == 0 && z == 0)

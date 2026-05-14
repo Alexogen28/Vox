@@ -184,9 +184,11 @@ public class InventoryManager : MonoBehaviour
         currentWeaponSlot = slotToEquipFrom;
         WeaponItem weaponToEquip = inventorySlots[slotToEquipFrom].GetItemInSlot() as WeaponItem;
 
-        Transform rotationOfWeapon = gameManager.playerController.gameObject.transform.GetChild(0);
+        Transform rotationOfCamera = gameManager.playerController.gameObject.transform.GetChild(0);
+        Transform rotationOfWeapon = weaponToEquip.prefab.transform;
+        Quaternion combinedRotation = rotationOfWeapon.rotation * rotationOfCamera.rotation;
 
-        GameObject weaponToInstantiate = Instantiate(weaponToEquip.prefab, positionForWeaponInUI.position, rotationOfWeapon.rotation, positionForWeaponInUI);
+        GameObject weaponToInstantiate = Instantiate(weaponToEquip.prefab, positionForWeaponInUI.position, combinedRotation, positionForWeaponInUI);
 
         if (!weaponToInstantiate.TryGetComponent<Weapon>(out var weaponComponent))
         {

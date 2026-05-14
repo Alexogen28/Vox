@@ -43,7 +43,7 @@ public class DecorationController : MonoBehaviour
 
     [Header("Available Decorations")]
     [SerializeField] private List<LevelDecorationCollection> availableDecorations;
-    [SerializeField] private GameObject descentWell;
+    [SerializeField] private DecorationDefinitionSO descentWell;
 
     [Header("For Debugging")]
     [SerializeField] private Transform decorationsRoot;
@@ -51,12 +51,27 @@ public class DecorationController : MonoBehaviour
     [Header("Parent of all decoration objects")]
     [SerializeField] private GameObject decorationsParent;
 
+    private List<Vector3> descentWellSpawnPoints = new List<Vector3>();
+    public void AddWellSpawnPosition(Vector3 descentWellPosition) => descentWellSpawnPoints.Add(descentWellPosition);
+    public void ClearWellSpawnPositions() => descentWellSpawnPoints.Clear();
+
+    public DecorationDefinitionSO DescentWell => descentWell;
+
+
+
     public void DecorateWorld(LevelSO level)
     {
         foreach(Transform child in decorationsParent.transform)
         {
             Destroy(child.gameObject);
         }
+
+        /*
+         * Spawn the descent wells 
+         */
+        foreach (Vector3 spawnPoint in descentWellSpawnPoints)
+            TrySpawnDecoration(descentWell, spawnPoint, 0);
+
 
         List<DecorationDefinitionSO> availableDecorations = GetAllDecorationsForLevel(level);
         //Debug.Log("Snatched all available decorations");

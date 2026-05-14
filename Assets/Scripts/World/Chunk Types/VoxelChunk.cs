@@ -64,26 +64,40 @@ public abstract class VoxelChunk : MonoBehaviour
     {
         bool bottomChunk = chunkCoord.y == 0 ? true : false;
 
-        Vector3Int positionToCarve = new Vector3Int();
+        Vector3Int positionToCarveDown = new Vector3Int();
 
         System.Random randX = Seed.CreateRandom(gameManager.worldManager.GetWorldSeed(), AvailableSeedKeys.Descent,
             new Vector3Int(chunkCoord.x, chunkCoord.y, 0));
-
         System.Random randZ = Seed.CreateRandom(gameManager.worldManager.GetWorldSeed(), AvailableSeedKeys.Descent,
             new Vector3Int(0, chunkCoord.y, chunkCoord.z));
 
         int centerX = randX.Next(5, chunkSize - 5);
         int centerZ = randZ.Next(5, chunkSize - 5);
 
-        positionToCarve.x = centerX;
-        positionToCarve.z = centerZ;
+        /*
+         * Store the position where the well should spawn in
+         */
+        Vector3 wellPosition = new Vector3();
+        TryGetBottomOYVoxel(centerX, centerZ, out wellPosition);
+        gameManager.decorationController.AddWellSpawnPosition(wellPosition);
 
-        CarveUp(positionToCarve, 5);
+
+
+        //Carve the descent
+        TryGetBottomOYVoxelInChunk(centerX, centerZ, out positionToCarveDown);
+        CarveDown(positionToCarveDown, 5);
         Debug.Log("Carved descent position at: " + WorldChunkCoord);
 
+        /*
+         * Check if the chunk is at the very bottom
+         * and if not, carve the chunk below it as well so they interconnect!
+         */
         if (!bottomChunk)
         {
-            gameManager.worldManager.worldChunks[new Vector3Int(chunkCoord.x, chunkCoord.y - 1, chunkCoord.z)].CarveDown(positionToCarve, 5);
+            Vector3Int positionToCarveUp = new Vector3Int();
+            gameManager.worldManager.worldChunks[new Vector3Int(chunkCoord.x, chunkCoord.y - 1, chunkCoord.z)].
+                TryGetTopOYVoxelInChunk(centerX, centerZ, out positionToCarveUp);
+            gameManager.worldManager.worldChunks[new Vector3Int(chunkCoord.x, chunkCoord.y - 1, chunkCoord.z)].CarveUp(positionToCarveUp, 5);
             gameManager.worldManager.worldChunks[new Vector3Int(chunkCoord.x, chunkCoord.y - 1, chunkCoord.z)].RedrawMesh();
         }
 
@@ -97,7 +111,7 @@ public abstract class VoxelChunk : MonoBehaviour
      */
     public void CarveDown(Vector3Int positionToCarve, int radius)
     {
-        for (int y = chunkSize - 1; y >= 0; y--)
+        for (int y = positionToCarve.y; y >= 0; y--)
         {
             /*
              * First carving pass determines if the "slice" of chunk
@@ -118,6 +132,7 @@ public abstract class VoxelChunk : MonoBehaviour
              * Second pass checks if it's mostly air
              * If not, carve it boy
              */
+            Debug.Log($"y={y}, airRatioCarveDown={accumulatedAirVoxels / denominator}");
             if (accumulatedAirVoxels / denominator > 0.8f) return;
             for (int x = Mathf.Max(0, positionToCarve.x - radius); x <= Mathf.Min(positionToCarve.x + radius, chunkSize - 1); x++)
             {
@@ -135,7 +150,7 @@ public abstract class VoxelChunk : MonoBehaviour
      */
     public void CarveUp(Vector3Int positionToCarve, int radius)
     {
-        for (int y = 0; y <= chunkSize - 1; y++)
+        for (int y = 0; y <= positionToCarve.y - 1; y++)
         {
             float denominator = 0.0f;
             float accumulatedAirVoxels = 0.0f;
@@ -148,6 +163,7 @@ public abstract class VoxelChunk : MonoBehaviour
                 }
             }
 
+            Debug.Log($"y={y}, airRatioCarveUp={accumulatedAirVoxels / denominator}");
             if (accumulatedAirVoxels / denominator > 0.8f) return;
             for (int x = Mathf.Max(0, positionToCarve.x - radius); x <= Mathf.Min(positionToCarve.x + radius, chunkSize - 1); x++)
             {
