@@ -18,7 +18,8 @@ public enum AvailableSeedKeys
 
     Dungeon,
     Item,
-    Enemy
+    Enemy,
+    Chunk
 }
 
 public static class Seed

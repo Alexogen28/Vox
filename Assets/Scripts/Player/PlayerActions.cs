@@ -33,13 +33,13 @@ public class PlayerActions : MonoBehaviour
 
     void HandleTimePassing()
     {
-        if (timeSinceLastShot <= attackBlock.attackDelay)
+        if (timeSinceLastShot <= attackBlock.attackCooldown)
             timeSinceLastShot += Time.deltaTime;
     }
 
     public void FireWeapon(bool isAttackKeyDown)
     {
-        if (!isAttackKeyDown || timeSinceLastShot < attackBlock.attackDelay)
+        if (!isAttackKeyDown || timeSinceLastShot < attackBlock.attackCooldown)
             return;
 
         timeSinceLastShot = 0.0f;
@@ -59,7 +59,7 @@ public class PlayerActions : MonoBehaviour
      */
     public void FireWeapon(bool isAttackKeyDown, int fake)
     {
-        if (!isAttackKeyDown || timeSinceLastShot < attackBlock.attackDelay)
+        if (!isAttackKeyDown || timeSinceLastShot < attackBlock.attackCooldown)
             return;
 
         timeSinceLastShot = 0.0f;

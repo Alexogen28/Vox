@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 3
   tags:
   - LevelPortal
+  - HealthSprite
+  - ManaSprite
+  - Enemy
   layers:
   - Default
   - TransparentFX

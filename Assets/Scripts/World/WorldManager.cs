@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using Unity.AI.Navigation;
 using UnityEngine;
+using UnityEngine.AI;
 
 /*
     Master class for anything world data related
@@ -36,14 +38,12 @@ public class WorldManager : MonoBehaviour
     [SerializeField] private LevelSO startingLevel;
     [SerializeField] private int worldSeed = 12345;
     [SerializeField] private bool randomiseIntOnPlay = true;
-
-    
     public int seedMinimumValue = 1;
     public int seedMaximumValue = int.MaxValue;
-    
     private Vector3Int worldSize;
     public Dictionary<Vector3Int, VoxelChunk> worldChunks = new();
 
+    [SerializeField] private NavMeshSurface navMeshSurface;
 
     public int GetWorldSeed() => worldSeed;
 
@@ -52,6 +52,8 @@ public class WorldManager : MonoBehaviour
 
     public Dictionary<Vector3Int, VoxelChunk> GetAllWorldChunks =>
         worldChunks;
+
+    public NavMeshSurface GetNavMeshSurface() => navMeshSurface;
 
     private void SetRandomSeed()
     {
@@ -114,29 +116,26 @@ public class WorldManager : MonoBehaviour
 
         /*
          * First pass of world generation
-         * sets down all chunks in their base form
+         * 
+         * Sets down all chunks in their base form
          * and stretches out a portal across the floor of the world
          */
         FirstPassGeneration(level);
 
         /*
          * Second pass of world generation
-         * determines the possible descent positions 
+         * 
+         * Determines the possible descent positions 
          * and stores them so Decoration Controller can then spawn wells
          */
         SecondGenerationPass(level);
 
         /*
          * Third pass of world generation
-         * Adds edge layers to confine the player
-         */
-
-        /*
-         * Fourth pass of world generation
+         * 
          * Adds decorations to the world
          */
         gameManager.decorationController.DecorateWorld(level);
-
 
 
 
@@ -151,6 +150,14 @@ public class WorldManager : MonoBehaviour
         RenderSettings.fogColor = level.fogColour;
         RenderSettings.ambientLight = level.ambientLightColour;
         RenderSettings.fogMode = level.fogMode;
+
+        /*
+         * Fourth pass of world generation
+         * 
+         * Creates the necessary nav mesh
+         * for enemies to be able to move
+         */
+        FourthGenerationPass(level);
     }
 
     private void FirstPassGeneration(LevelSO level)
@@ -182,7 +189,7 @@ public class WorldManager : MonoBehaviour
 
     private void SecondGenerationPass(LevelSO level)
     {
-        if(level.levelKey == AvailableSeedKeys.Surface)
+        if (level.levelKey == AvailableSeedKeys.Surface)
         {
             Vector3Int chunkToDescendFrom = GetRandomDescentChunk(level.shouldAvoidEdges, 0, level);
             worldChunks[chunkToDescendFrom].CarveDescent();
@@ -194,6 +201,11 @@ public class WorldManager : MonoBehaviour
             Vector3Int chunkToDescendFrom = GetRandomDescentChunk(level.shouldAvoidEdges, y, level);
             worldChunks[chunkToDescendFrom].CarveDescent();
         }
+    }
+
+    private void FourthGenerationPass(LevelSO level)
+    {
+        navMeshSurface.BuildNavMesh();
     }
 
     public void GenerateWorldOnStartup()
@@ -234,12 +246,12 @@ public class WorldManager : MonoBehaviour
         System.Random spawnRandom = Seed.CreateRandom(worldSeed, AvailableSeedKeys.SpawnPoint, spawnChunk);
 
         //pick only the middle section of the chunk
-        int xInChunk = spawnRandom.Next(chunkSize/4, (chunkSize/2) + (chunkSize/4));
-        int zInChunk = spawnRandom.Next(chunkSize/4, (chunkSize/2) + (chunkSize/4));
+        int xInChunk = spawnRandom.Next(chunkSize / 4, (chunkSize / 2) + (chunkSize / 4));
+        int zInChunk = spawnRandom.Next(chunkSize / 4, (chunkSize / 2) + (chunkSize / 4));
         Vector3 spawnLocation = new Vector3();
         worldChunks[spawnChunk].TryGetBottomOYVoxel(xInChunk, zInChunk, out spawnLocation);
 
-        spawnLocation.y += voxelSize*2;
+        spawnLocation.y += voxelSize * 2;
         Debug.Log("Determined spawn location y:" + spawnLocation.y);
 
         gameManager.playerController.TeleportPlayer(spawnLocation);
@@ -330,7 +342,33 @@ public class WorldManager : MonoBehaviour
         );
     }
 
-    public Vector3Int GetRandomDescentChunk(bool avoidEdges, int yLayer, LevelSO currentLevel)
+    public VoxelChunk GetRandomChunk(bool avoidEdges, AvailableSeedKeys key, Vector3Int seedCoordinates)
+    {
+        int minX = avoidEdges && worldSize.x > 2 ? 1 : 0;
+        int maxX = avoidEdges && worldSize.x > 2 ? worldSize.x - 1 : worldSize.x;
+
+        int minY = avoidEdges && worldSize.y > 2 ? 1 : 0;
+        int maxY = avoidEdges && worldSize.y > 2 ? worldSize.y - 1 : worldSize.y;
+
+        int minZ = avoidEdges && worldSize.z > 2 ? 1 : 0;
+        int maxZ = avoidEdges && worldSize.z > 2 ? worldSize.z - 1 : worldSize.z;
+
+        Vector3Int offsetsX = new Vector3Int(1, 0, 0);
+        Vector3Int offsetsY = new Vector3Int(0, 1, 0);
+        Vector3Int offsetsZ = new Vector3Int(0, 0, 1);
+
+        System.Random randomX = Seed.CreateRandom(worldSeed, key, seedCoordinates + offsetsX);
+        System.Random randomY = Seed.CreateRandom(worldSeed, key, seedCoordinates + offsetsY);
+        System.Random randomZ = Seed.CreateRandom(worldSeed, key, seedCoordinates + offsetsZ);
+
+        int chunkX = randomX.Next(minX, maxX);
+        int chunkY = randomX.Next(minY, maxY);
+        int chunkZ = randomX.Next(minY, maxY);
+
+        return worldChunks[new Vector3Int(chunkX, chunkY, chunkZ)];
+    }
+
+    private Vector3Int GetRandomDescentChunk(bool avoidEdges, int yLayer, LevelSO currentLevel)
     {
         int minX = avoidEdges && worldSize.x > 2 ? 1 : 0;
         int maxX = avoidEdges && worldSize.x > 2 ? worldSize.x - 1 : worldSize.x;
