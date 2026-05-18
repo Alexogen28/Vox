@@ -28,6 +28,8 @@ public class EnemySpawnManager : MonoBehaviour
             Destroy(child.gameObject);
         }
 
+        Debug.Log($"SpawnEnemies called. Level: {level?.name}");
+
         List<EnemyDefinitionSO> availableEnemies = GetAllEnemiesForLevel(level);
 
         IReadOnlyDictionary<Vector3Int, VoxelChunk> worldChunks = gameManager.worldManager.GetAllWorldChunks;
@@ -51,6 +53,7 @@ public class EnemySpawnManager : MonoBehaviour
                     continue;
 
                 int enemyIndex = rng.Next(0, availableEnemies.Count);
+                Debug.Log($"Attempting spawn at {spawnPosition}");
                 SpawnEnemy(availableEnemies[enemyIndex], spawnPosition);
             }
         }

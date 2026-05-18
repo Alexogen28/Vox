@@ -82,11 +82,10 @@ public abstract class VoxelChunk : MonoBehaviour
         gameManager.decorationController.AddWellSpawnPosition(wellPosition);
 
 
-
         //Carve the descent
         TryGetBottomOYVoxelInChunk(centerX, centerZ, out positionToCarveDown);
         CarveDown(positionToCarveDown, 5);
-        Debug.Log("Carved descent position at: " + WorldChunkCoord);
+        //Debug.Log("Carved descent position at: " + WorldChunkCoord);
 
         /*
          * Check if the chunk is at the very bottom
@@ -132,7 +131,7 @@ public abstract class VoxelChunk : MonoBehaviour
              * Second pass checks if it's mostly air
              * If not, carve it boy
              */
-            Debug.Log($"y={y}, airRatioCarveDown={accumulatedAirVoxels / denominator}");
+            //Debug.Log($"y={y}, airRatioCarveDown={accumulatedAirVoxels / denominator}");
             if (accumulatedAirVoxels / denominator > 0.8f) return;
             for (int x = Mathf.Max(0, positionToCarve.x - radius); x <= Mathf.Min(positionToCarve.x + radius, chunkSize - 1); x++)
             {

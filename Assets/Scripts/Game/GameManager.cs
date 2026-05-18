@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] public ItemGenerator itemGenerator;
     [SerializeField] public WorldManager worldManager;
     [SerializeField] public LevelManager levelManager;
+    [SerializeField] public EnemySpawnManager enemySpawnManager;
 
 
     [Header("Item List")]

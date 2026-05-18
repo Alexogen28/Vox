@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7add8b437bac50b4c9cd196f63262f0d, type: 3}
   m_Name: Basic Sword Skeleton
   m_EditorClassIdentifier: 
-  aggroRange: 10
+  prefab: {fileID: 1678003919421857300, guid: ff18be4330055424ba984638a54bc7cc, type: 3}
+  aggroRange: 20
   attackRange: 2
   roamRadius: 10
   roamWaitTime: 2

@@ -6,7 +6,7 @@ using UnityEngine;
 public class FireableBulletSO : BaseItemSO
 {
     [SerializeField] public GameObject prefab;
-    [SerializeField] public float damageMod;
+    [SerializeField] public float damage;
     [SerializeField] public float velocity;
     [SerializeField] public float lifetime;
     [SerializeField] public float radius;

@@ -4489,6 +4489,7 @@ MonoBehaviour:
   itemGenerator: {fileID: 703678169}
   worldManager: {fileID: 1967955031}
   levelManager: {fileID: 1041112184}
+  enemySpawnManager: {fileID: 623036355}
   availableItemsList:
   - {fileID: 11400000, guid: 44fd92df575050ba5875621d16a70718, type: 2}
   - {fileID: 11400000, guid: 7a2ac11fd9cd5ec2dafcc44c22f4d9bb, type: 2}

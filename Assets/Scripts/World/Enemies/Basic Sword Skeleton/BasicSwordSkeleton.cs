@@ -22,8 +22,11 @@ public class BasicSwordSkeleton : EnemyController
         {
             Vector3 roamTarget = GetRandomRoamPosition();
             navMeshAgent.SetDestination(roamTarget);
-            isWaiting = true;
-            roamWaitTimer = roamWaitTime;
+            if (roamTarget != transform.position)
+            {
+                isWaiting = true;
+                roamWaitTimer = roamWaitTime;
+            }
         }
     }
 
@@ -39,7 +42,6 @@ public class BasicSwordSkeleton : EnemyController
         if (distanceToPlayer < attackRange)
         {
             currentState = EnemyState.Attack;
-            navMeshAgent.ResetPath();
             return;
         }
 
@@ -48,19 +50,16 @@ public class BasicSwordSkeleton : EnemyController
 
     protected override void UpdateAttack(float distanceToPlayer)
     {
-        transform.LookAt(playerPosition);
-
         if (distanceToPlayer > attackRange)
         {
-            currentState = EnemyState.Roam;
+            currentState = EnemyState.Aggro;
             return;
         }
-
+        navMeshAgent.SetDestination(playerPosition);
         if (Time.time - lastAttackTime >= attack.attackCooldown)
         {
             lastAttackTime = Time.time;
             animator.SetTrigger("Attack");
-            attack.DealDamage(playerController.GetComponent<Health>(), attack.attackDamage);
         }
     }
 }

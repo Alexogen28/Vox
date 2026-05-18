@@ -25,7 +25,7 @@ public class ProjectileBulletItem : BulletItem
 
         //customs stats
         this.prefab = stats.prefab;
-        this.damage = stats.damageMod;
+        this.damage = stats.damage;
         this.velocity = stats.velocity;
         this.lifetime = stats.lifetime;
         this.radius = stats.radius;

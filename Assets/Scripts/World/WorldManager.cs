@@ -206,6 +206,7 @@ public class WorldManager : MonoBehaviour
     private void FourthGenerationPass(LevelSO level)
     {
         navMeshSurface.BuildNavMesh();
+        gameManager.enemySpawnManager.SpawnEnemies(level);
     }
 
     public void GenerateWorldOnStartup()

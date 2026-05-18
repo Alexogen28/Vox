@@ -84,7 +84,7 @@ public class UpperCavesChunk : VoxelChunk
                 float frequency = noiseScale;
                 float caveCenterY = 0.0f;
 
-                for (int i = 0; i < 3; i++)
+                for (int i = 0; i < 2; i++)
                 {
                     caveCenterY += Mathf.PerlinNoise(
                         (chunkVoxelWorldPosition.x + x + layerOffset.x) * frequency,
@@ -100,7 +100,7 @@ public class UpperCavesChunk : VoxelChunk
                     float distFromCenter = Mathf.Abs(y - caveCenterY);
 
                     float thicknessNoise = (mapXOY[x, y] + mapYOZ[y, z]) / 2f;
-                    float bandThickness = Mathf.Lerp(1f, 20f, thicknessNoise);
+                    float bandThickness = Mathf.Lerp(8f, 20f, thicknessNoise);
 
                     if (distFromCenter < bandThickness)
                         voxels[x, y, z] = 1;

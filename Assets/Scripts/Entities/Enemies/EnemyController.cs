@@ -20,6 +20,7 @@ public abstract class EnemyController : MonoBehaviour
     [SerializeField] protected Vector3 playerPosition;
     [SerializeField] protected NavMeshAgent navMeshAgent;
 
+
     [Header("State Control")]
     [SerializeField] protected float aggroRange = 10.0f;
     [SerializeField] protected float attackRange = 2.0f;
@@ -31,6 +32,7 @@ public abstract class EnemyController : MonoBehaviour
     protected float lastAttackTime = 0f;
     protected float roamWaitTimer = 0f;
     protected bool isWaiting = false;
+    protected Health playerHealth; 
 
     float distanceToPlayer = 0.0f;
     protected EnemyState currentState;
@@ -61,6 +63,7 @@ public abstract class EnemyController : MonoBehaviour
         animator = GetComponent<Animator>();
         navMeshAgent = GetComponent<NavMeshAgent>();
         currentState = EnemyState.Roam;
+        playerHealth = playerController.GetComponent<Health>();
 
         aggroRange = enemyDef.aggroRange;
         attackRange = enemyDef.attackRange;
@@ -70,6 +73,8 @@ public abstract class EnemyController : MonoBehaviour
         attack.attackCooldown = enemyDef.attackCooldown;
         health.maxHealth = enemyDef.maxHealth;
         health.currentHealth = enemyDef.maxHealth;
+
+        navMeshAgent.Warp(transform.position);
     }
 
     protected abstract void UpdateRoam(float distanceToPlayer);
@@ -80,9 +85,16 @@ public abstract class EnemyController : MonoBehaviour
     {
         Vector3 randomDirection = Random.insideUnitSphere * roamRadius;
         randomDirection += transform.position;
-
         NavMeshHit hit;
-        NavMesh.SamplePosition(randomDirection, out hit, roamRadius, NavMesh.AllAreas);
-        return hit.position;
+        if (NavMesh.SamplePosition(randomDirection, out hit, roamRadius, NavMesh.AllAreas))
+            return hit.position;
+        return transform.position;
+    }
+
+    public void OnAttackHit()
+    {
+        float dist = Vector3.Distance(transform.position, playerPosition);
+        if (dist <= attackRange)
+            attack.DealDamage(playerHealth, attack.attackDamage);
     }
 }
